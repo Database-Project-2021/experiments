@@ -1,0 +1,133 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Launch Current File",
+            "request": "launch",
+            "mainClass": "${file}"
+        },
+        {
+            "type": "java",
+            "name": "Launch App",
+            "request": "launch",
+            "mainClass": "org.elasql.bench.App",
+            "projectName": "bench"
+        },
+        {
+            "type": "java",
+            "name": "Launch ElasqlMicrobenchParamGen",
+            "request": "launch",
+            "mainClass": "org.elasql.bench.benchmarks.micro.rte.ElasqlMicrobenchParamGen",
+            "projectName": "bench"
+        },
+        {
+            "type": "java",
+            "name": "Launch TpccMigrationTestRteGenerator",
+            "request": "launch",
+            "mainClass": "org.elasql.bench.benchmarks.tpcc.TpccMigrationTestRteGenerator",
+            "projectName": "bench"
+        },
+        {
+            "type": "java",
+            "name": "Launch TpccScaleoutTestRteGenerator",
+            "request": "launch",
+            "mainClass": "org.elasql.bench.benchmarks.tpcc.TpccScaleoutTestRteGenerator",
+            "projectName": "bench"
+        },
+        {
+            "type": "java",
+            "name": "Launch SingleTableGoogleParamGen",
+            "request": "launch",
+            "mainClass": "org.elasql.bench.benchmarks.ycsb.rte.SingleTableGoogleParamGen",
+            "projectName": "bench"
+        },
+        {
+            "type": "java",
+            "name": "Launch SingleTableHotCounterParamGen",
+            "request": "launch",
+            "mainClass": "org.elasql.bench.benchmarks.ycsb.rte.SingleTableHotCounterParamGen",
+            "projectName": "bench"
+        },
+        {
+            "type": "java",
+            "name": "Launch SingleTableMultiTenantParamGen",
+            "request": "launch",
+            "mainClass": "org.elasql.bench.benchmarks.ycsb.rte.SingleTableMultiTenantParamGen",
+            "projectName": "bench"
+        },
+        {
+            "type": "java",
+            "name": "Launch SingleTableNormalParamGen",
+            "request": "launch",
+            "mainClass": "org.elasql.bench.benchmarks.ycsb.rte.SingleTableNormalParamGen",
+            "projectName": "bench"
+        },
+        {
+            "type": "java",
+            "name": "Launch TwoSidedSkewGenerator",
+            "request": "launch",
+            "mainClass": "org.elasql.bench.benchmarks.ycsb.rte.TwoSidedSkewGenerator",
+            "projectName": "bench"
+        },
+        {
+            "type": "java",
+            "name": "Launch StartUp",
+            "request": "launch",
+            "mainClass": "org.elasql.bench.server.StartUp",
+            "projectName": "bench"
+        },
+        {
+            "type": "java",
+            "name": "Launch TpccKeyIterator",
+            "request": "launch",
+            "mainClass": "org.elasql.bench.server.migration.tpcc.TpccKeyIterator",
+            "projectName": "bench"
+        },
+        {
+            "type": "java",
+            "name": "Launch ClientDemo",
+            "request": "launch",
+            "mainClass": "org.vanilladb.comm.client.ClientDemo",
+            "projectName": "comm"
+        },
+        {
+            "type": "java",
+            "name": "Launch ServerDemo",
+            "request": "launch",
+            "mainClass": "org.vanilladb.comm.server.ServerDemo",
+            "projectName": "comm"
+        },
+        {
+            "type": "java",
+            "name": "Launch StartUp(1)",
+            "request": "launch",
+            "mainClass": "org.vanilladb.core.server.StartUp",
+            "projectName": "core"
+        },
+        {
+            "type": "java",
+            "name": "Launch ConsoleSQLInterpreter",
+            "request": "launch",
+            "mainClass": "org.vanilladb.core.util.ConsoleSQLInterpreter",
+            "projectName": "core"
+        },
+        {
+            "type": "java",
+            "name": "Launch LogFileTranslator",
+            "request": "launch",
+            "mainClass": "org.vanilladb.core.util.LogFileTranslator",
+            "projectName": "core"
+        },
+        {
+            "type": "java",
+            "name": "Launch Test",
+            "request": "launch",
+            "mainClass": "org.elasql.migration.planner.clay.Test",
+            "projectName": "elasql"
+        }
+    ]
+}

@@ -1,0 +1,237 @@
+2021-07-22 15:33:23,269 [Worker-3: Loading available Gradle versions] INFO  o.e.b.c.i.u.g.PublishedGradleVersions - Gradle version information cache is up-to-date. Trying to read.
+2021-07-22 15:33:59,868 [Worker-3: Importing Maven projects] INFO  o.e.m.c.i.l.LifecycleMappingFactory - Using org.eclipse.m2e.jdt.JarLifecycleMapping lifecycle mapping for MavenProject: org.elasql:elasql:0.2.1 @ D:\data\db_project\elasql\pom.xml.
+2021-07-22 15:34:01,282 [Worker-3: Importing Maven projects] INFO  o.e.m.c.i.e.AbstractTransferListenerAdapter - Downloading https://repo.maven.apache.org/maven2/org/vanilladb/core/0.4.2/core-0.4.2.pom
+2021-07-22 15:34:01,618 [Worker-3: Importing Maven projects] INFO  o.e.m.c.i.e.AbstractTransferListenerAdapter - Downloaded https://repo.maven.apache.org/maven2/org/vanilladb/core/0.4.2/core-0.4.2.pom
+2021-07-22 15:34:01,889 [Worker-3: Importing Maven projects] INFO  o.e.m.c.i.e.AbstractTransferListenerAdapter - Downloading https://repo.maven.apache.org/maven2/org/vanilladb/comm/0.2.4/comm-0.2.4.pom
+2021-07-22 15:34:02,160 [Worker-3: Importing Maven projects] INFO  o.e.m.c.i.e.AbstractTransferListenerAdapter - Downloaded https://repo.maven.apache.org/maven2/org/vanilladb/comm/0.2.4/comm-0.2.4.pom
+2021-07-22 15:34:02,421 [AetherRepositoryConnector-repo.maven.apache.org-0-1] INFO  o.e.m.c.i.e.AbstractTransferListenerAdapter - Downloading https://repo.maven.apache.org/maven2/org/vanilladb/comm/0.2.4/comm-0.2.4.jar
+2021-07-22 15:34:02,587 [AetherRepositoryConnector-repo.maven.apache.org-0-0] INFO  o.e.m.c.i.e.AbstractTransferListenerAdapter - Downloading https://repo.maven.apache.org/maven2/org/vanilladb/core/0.4.2/core-0.4.2.jar
+2021-07-22 15:34:03,644 [AetherRepositoryConnector-repo.maven.apache.org-0-1] INFO  o.e.m.c.i.e.AbstractTransferListenerAdapter - Downloaded https://repo.maven.apache.org/maven2/org/vanilladb/comm/0.2.4/comm-0.2.4.jar
+2021-07-22 15:34:03,758 [AetherRepositoryConnector-repo.maven.apache.org-0-0] INFO  o.e.m.c.i.e.AbstractTransferListenerAdapter - Downloaded https://repo.maven.apache.org/maven2/org/vanilladb/core/0.4.2/core-0.4.2.jar
+2021-07-22 15:34:04,116 [Worker-3: Importing Maven projects] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Adding source folder /elasql/src/main/java
+2021-07-22 15:34:04,116 [Worker-3: Importing Maven projects] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Adding resource folder /elasql/src/main/resources
+2021-07-22 15:34:04,117 [Worker-3: Importing Maven projects] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Adding source folder /elasql/src/test/java
+2021-07-22 15:34:04,201 [Worker-3: Importing Maven projects] INFO  o.e.m.c.i.p.ProjectConfigurationManager - Imported and configured 1 project(s) in 7 sec
+2021-07-22 15:34:05,706 [Worker-16: Download sources and javadoc] INFO  o.e.m.c.i.e.AbstractTransferListenerAdapter - Downloading https://repo.maven.apache.org/maven2/org/vanilladb/core/0.4.2/core-0.4.2-sources.jar
+2021-07-22 15:34:06,546 [Worker-16: Download sources and javadoc] INFO  o.e.m.c.i.e.AbstractTransferListenerAdapter - Downloaded https://repo.maven.apache.org/maven2/org/vanilladb/core/0.4.2/core-0.4.2-sources.jar
+2021-07-22 15:34:06,555 [Worker-16: Download sources and javadoc] INFO  o.e.m.j.internal.DownloadSourcesJob - Downloaded sources for org.vanilladb:core:0.4.2
+2021-07-22 15:34:07,407 [Worker-16: Download sources and javadoc] INFO  o.e.m.c.i.e.AbstractTransferListenerAdapter - Downloading https://repo.maven.apache.org/maven2/org/vanilladb/comm/0.2.4/comm-0.2.4-sources.jar
+2021-07-22 15:34:07,850 [Worker-16: Download sources and javadoc] INFO  o.e.m.c.i.e.AbstractTransferListenerAdapter - Downloaded https://repo.maven.apache.org/maven2/org/vanilladb/comm/0.2.4/comm-0.2.4-sources.jar
+2021-07-22 15:34:07,868 [Worker-16: Download sources and javadoc] INFO  o.e.m.j.internal.DownloadSourcesJob - Downloaded sources for org.vanilladb:comm:0.2.4
+2021-07-22 15:34:07,877 [Worker-16: Download sources and javadoc] INFO  o.e.m.j.internal.DownloadSourcesJob - Downloaded sources for org.vanilladb:core:0.4.2
+2021-07-22 15:34:07,885 [Worker-16: Download sources and javadoc] INFO  o.e.m.j.internal.DownloadSourcesJob - Downloaded sources for org.vanilladb:comm:0.2.4
+2021-07-22 15:34:08,384 [Worker-9: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2021-07-22 15:34:08,394 [Worker-9: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 4 resources
+2021-07-22 15:34:08,440 [Worker-9: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2021-07-22 15:34:08,441 [Worker-9: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 4 resources
+2021-07-22 15:34:08,466 [Worker-9: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2021-07-22 15:34:08,467 [Worker-9: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory D:\data\db_project\elasql\src\test\resources
+2021-07-22 15:34:09,501 [Worker-0: Importing Maven projects] INFO  o.e.m.c.i.l.LifecycleMappingFactory - Using org.eclipse.m2e.jdt.JarLifecycleMapping lifecycle mapping for MavenProject: org.elasql:bench:0.2.1 @ D:\data\db_project\elasqlbench\pom.xml.
+2021-07-22 15:34:09,555 [Worker-0: Importing Maven projects] INFO  o.e.m.c.i.p.WorkspaceClassifierResolverManager - Resolving P/elasql: org.elasql:elasql:0.2.1 with classifier  to /elasql/target/classes
+2021-07-22 15:34:09,609 [Worker-0: Importing Maven projects] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Adding source folder /elasqlbench/src/main/java
+2021-07-22 15:34:09,609 [Worker-0: Importing Maven projects] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Adding resource folder /elasqlbench/src/main/resources
+2021-07-22 15:34:09,610 [Worker-0: Importing Maven projects] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Adding source folder /elasqlbench/src/test/java
+2021-07-22 15:34:09,664 [Worker-0: Importing Maven projects] INFO  o.e.m.c.i.p.ProjectConfigurationManager - Imported and configured 1 project(s) in 0 sec
+2021-07-22 15:34:10,627 [Worker-18: Download sources and javadoc] INFO  o.e.m.c.i.p.WorkspaceClassifierResolverManager - Resolving P/elasql: org.elasql:elasql:0.2.1 with classifier  to /elasql/target/classes
+2021-07-22 15:34:10,725 [Worker-13: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2021-07-22 15:34:10,726 [Worker-13: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 6 resources
+2021-07-22 15:34:10,754 [Worker-13: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2021-07-22 15:34:10,755 [Worker-13: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 6 resources
+2021-07-22 15:34:10,780 [Worker-13: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2021-07-22 15:34:10,780 [Worker-13: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory D:\data\db_project\elasqlbench\src\test\resources
+2021-07-22 15:34:11,470 [Worker-18: Download sources and javadoc] INFO  o.e.m.c.i.e.AbstractTransferListenerAdapter - Downloading https://repo.maven.apache.org/maven2/org/vanilladb/bench/0.4.1/bench-0.4.1-sources.jar
+2021-07-22 15:34:12,012 [Worker-18: Download sources and javadoc] INFO  o.e.m.c.i.e.AbstractTransferListenerAdapter - Downloaded https://repo.maven.apache.org/maven2/org/vanilladb/bench/0.4.1/bench-0.4.1-sources.jar
+2021-07-22 15:34:12,018 [Worker-18: Download sources and javadoc] INFO  o.e.m.j.internal.DownloadSourcesJob - Downloaded sources for org.vanilladb:bench:0.4.1
+2021-07-22 15:34:12,023 [Worker-18: Download sources and javadoc] INFO  o.e.m.j.internal.DownloadSourcesJob - Downloaded sources for org.vanilladb:bench:0.4.1
+2021-07-22 15:34:12,203 [Worker-3: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2021-07-22 15:34:12,204 [Worker-3: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource
+2021-07-22 15:34:12,206 [Worker-3: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2021-07-22 15:34:12,206 [Worker-3: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource
+2021-07-22 15:34:12,207 [Worker-3: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2021-07-22 15:34:12,207 [Worker-3: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory D:\data\db_project\elasqlbench\src\test\resources
+2021-07-22 15:34:30,544 [Worker-9: Importing Maven projects] INFO  o.e.m.c.i.l.LifecycleMappingFactory - Using org.eclipse.m2e.jdt.JarLifecycleMapping lifecycle mapping for MavenProject: org.vanilladb:bench:0.4.1 @ D:\data\db_project\vanillabench\pom.xml.
+2021-07-22 15:34:30,647 [Worker-9: Importing Maven projects] INFO  o.e.m.c.i.l.LifecycleMappingFactory - Using org.eclipse.m2e.jdt.JarLifecycleMapping lifecycle mapping for MavenProject: org.elasql:bench:0.2.1 @ D:\data\db_project\elasqlbench\pom.xml.
+2021-07-22 15:34:30,657 [Worker-9: Importing Maven projects] INFO  o.e.m.c.i.p.WorkspaceClassifierResolverManager - Resolving P/vanillabench: org.vanilladb:bench:0.4.1 with classifier  to /vanillabench/target/classes
+2021-07-22 15:34:30,661 [Worker-9: Importing Maven projects] INFO  o.e.m.c.i.p.WorkspaceClassifierResolverManager - Resolving P/elasql: org.elasql:elasql:0.2.1 with classifier  to /elasql/target/classes
+2021-07-22 15:34:30,792 [Worker-9: Importing Maven projects] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Adding source folder /vanillabench/src/main/java
+2021-07-22 15:34:30,793 [Worker-9: Importing Maven projects] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Adding resource folder /vanillabench/src/main/resources
+2021-07-22 15:34:30,802 [Worker-9: Importing Maven projects] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Adding source folder /vanillabench/src/test/java
+2021-07-22 15:34:30,868 [Worker-9: Importing Maven projects] INFO  o.e.m.c.i.p.ProjectConfigurationManager - Imported and configured 1 project(s) in 0 sec
+2021-07-22 15:34:31,711 [Worker-1: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2021-07-22 15:34:31,713 [Worker-1: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 1 resource
+2021-07-22 15:34:31,716 [Worker-1: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 1 resource
+2021-07-22 15:34:31,720 [Worker-1: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 1 resource
+2021-07-22 15:34:31,724 [Worker-1: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2021-07-22 15:34:31,724 [Worker-1: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 3 resources
+2021-07-22 15:34:31,737 [Worker-1: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2021-07-22 15:34:31,737 [Worker-1: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory D:\data\db_project\vanillabench\src\test\resources
+2021-07-22 15:34:32,372 [Worker-8: Building] INFO  o.e.m.c.i.p.WorkspaceClassifierResolverManager - Resolving P/vanillabench: org.vanilladb:bench:0.4.1 with classifier  to /vanillabench/target/classes
+2021-07-22 15:34:32,377 [Worker-8: Building] INFO  o.e.m.c.i.p.WorkspaceClassifierResolverManager - Resolving P/elasql: org.elasql:elasql:0.2.1 with classifier  to /elasql/target/classes
+2021-07-22 15:34:32,383 [Worker-8: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2021-07-22 15:34:32,384 [Worker-8: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource
+2021-07-22 15:34:32,385 [Worker-8: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2021-07-22 15:34:32,388 [Worker-8: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 6 resources
+2021-07-22 15:34:32,405 [Worker-8: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2021-07-22 15:34:32,406 [Worker-8: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory D:\data\db_project\elasqlbench\src\test\resources
+2021-07-22 15:34:49,416 [Worker-12: Importing Maven projects] INFO  o.e.m.c.i.l.LifecycleMappingFactory - Using org.eclipse.m2e.jdt.JarLifecycleMapping lifecycle mapping for MavenProject: org.vanilladb:comm:0.2.4 @ D:\data\db_project\vanillacomm\pom.xml.
+2021-07-22 15:34:49,529 [Worker-12: Importing Maven projects] INFO  o.e.m.c.i.l.LifecycleMappingFactory - Using org.eclipse.m2e.jdt.JarLifecycleMapping lifecycle mapping for MavenProject: org.elasql:elasql:0.2.1 @ D:\data\db_project\elasql\pom.xml.
+2021-07-22 15:34:49,554 [Worker-12: Importing Maven projects] INFO  o.e.m.c.i.p.WorkspaceClassifierResolverManager - Resolving P/vanillacomm: org.vanilladb:comm:0.2.4 with classifier  to /vanillacomm/target/classes
+2021-07-22 15:34:49,631 [Worker-12: Importing Maven projects] INFO  o.e.m.c.i.l.LifecycleMappingFactory - Using org.eclipse.m2e.jdt.JarLifecycleMapping lifecycle mapping for MavenProject: org.elasql:bench:0.2.1 @ D:\data\db_project\elasqlbench\pom.xml.
+2021-07-22 15:34:49,641 [Worker-12: Importing Maven projects] INFO  o.e.m.c.i.p.WorkspaceClassifierResolverManager - Resolving P/vanillabench: org.vanilladb:bench:0.4.1 with classifier  to /vanillabench/target/classes
+2021-07-22 15:34:49,645 [Worker-12: Importing Maven projects] INFO  o.e.m.c.i.p.WorkspaceClassifierResolverManager - Resolving P/elasql: org.elasql:elasql:0.2.1 with classifier  to /elasql/target/classes
+2021-07-22 15:34:49,645 [Worker-12: Importing Maven projects] INFO  o.e.m.c.i.p.WorkspaceClassifierResolverManager - Resolving P/vanillacomm: org.vanilladb:comm:0.2.4 with classifier  to /vanillacomm/target/classes
+2021-07-22 15:34:50,002 [Worker-12: Importing Maven projects] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Adding source folder /vanillacomm/src/main/java
+2021-07-22 15:34:50,002 [Worker-12: Importing Maven projects] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Adding resource folder /vanillacomm/src/main/resources
+2021-07-22 15:34:50,002 [Worker-12: Importing Maven projects] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Adding source folder /vanillacomm/src/test/java
+2021-07-22 15:34:50,028 [Worker-12: Importing Maven projects] INFO  o.e.m.c.i.p.ProjectConfigurationManager - Imported and configured 1 project(s) in 0 sec
+2021-07-22 15:34:50,581 [Worker-7: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2021-07-22 15:34:50,582 [Worker-7: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 2 resources
+2021-07-22 15:34:50,597 [Worker-7: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2021-07-22 15:34:50,598 [Worker-7: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory D:\data\db_project\vanillacomm\src\test\resources
+2021-07-22 15:34:50,779 [Worker-0: Download sources and javadoc] INFO  o.e.m.c.i.e.AbstractTransferListenerAdapter - Downloaded file://D:\data\db_project\vanillacomm/lib/junit/junit/4.13.1/junit-4.13.1-sources.jar
+2021-07-22 15:34:51,335 [Worker-18: Building] INFO  o.e.m.c.i.p.WorkspaceClassifierResolverManager - Resolving P/vanillacomm: org.vanilladb:comm:0.2.4 with classifier  to /vanillacomm/target/classes
+2021-07-22 15:34:51,351 [Worker-18: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2021-07-22 15:34:51,351 [Worker-18: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource
+2021-07-22 15:34:51,352 [Worker-18: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2021-07-22 15:34:51,354 [Worker-18: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 4 resources
+2021-07-22 15:34:51,370 [Worker-18: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2021-07-22 15:34:51,370 [Worker-18: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory D:\data\db_project\elasql\src\test\resources
+2021-07-22 15:34:51,578 [Worker-0: Download sources and javadoc] INFO  o.e.m.c.i.e.AbstractTransferListenerAdapter - Downloading https://repo.maven.apache.org/maven2/junit/junit/4.13.1/junit-4.13.1-sources.jar
+2021-07-22 15:34:52,024 [Worker-4: Building] INFO  o.e.m.c.i.p.WorkspaceClassifierResolverManager - Resolving P/vanillabench: org.vanilladb:bench:0.4.1 with classifier  to /vanillabench/target/classes
+2021-07-22 15:34:52,029 [Worker-4: Building] INFO  o.e.m.c.i.p.WorkspaceClassifierResolverManager - Resolving P/elasql: org.elasql:elasql:0.2.1 with classifier  to /elasql/target/classes
+2021-07-22 15:34:52,029 [Worker-4: Building] INFO  o.e.m.c.i.p.WorkspaceClassifierResolverManager - Resolving P/vanillacomm: org.vanilladb:comm:0.2.4 with classifier  to /vanillacomm/target/classes
+2021-07-22 15:34:52,033 [Worker-4: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2021-07-22 15:34:52,033 [Worker-4: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource
+2021-07-22 15:34:52,035 [Worker-4: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2021-07-22 15:34:52,036 [Worker-4: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 6 resources
+2021-07-22 15:34:52,054 [Worker-4: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2021-07-22 15:34:52,055 [Worker-4: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory D:\data\db_project\elasqlbench\src\test\resources
+2021-07-22 15:34:52,353 [Worker-0: Download sources and javadoc] INFO  o.e.m.c.i.e.AbstractTransferListenerAdapter - Downloaded https://repo.maven.apache.org/maven2/junit/junit/4.13.1/junit-4.13.1-sources.jar
+2021-07-22 15:34:52,357 [Worker-0: Download sources and javadoc] INFO  o.e.m.j.internal.DownloadSourcesJob - Downloaded sources for junit:junit:4.13.1
+2021-07-22 15:34:52,363 [Worker-0: Download sources and javadoc] INFO  o.e.m.c.i.e.AbstractTransferListenerAdapter - Downloaded file://D:\data\db_project\vanillacomm/lib/net/sf/appia/core/4.1.2-vanilladb-v1/core-4.1.2-vanilladb-v1-sources.jar
+2021-07-22 15:34:53,050 [Worker-0: Download sources and javadoc] INFO  o.e.m.c.i.e.AbstractTransferListenerAdapter - Downloaded https://repo.maven.apache.org/maven2/net/sf/appia/core/4.1.2-vanilladb-v1/core-4.1.2-vanilladb-v1-sources.jar
+2021-07-22 15:34:53,061 [Worker-0: Download sources and javadoc] ERROR o.e.m.j.internal.DownloadSourcesJob - Could not download sources for net.sf.appia:core:4.1.2-vanilladb-v1
+org.eclipse.core.runtime.CoreException: Could not resolve artifact net.sf.appia:core:jar:sources:4.1.2-vanilladb-v1
+	at org.eclipse.m2e.core.internal.embedder.MavenImpl.lambda$4(MavenImpl.java:804)
+	at org.eclipse.m2e.core.internal.embedder.MavenExecutionContext.executeBare(MavenExecutionContext.java:179)
+	at org.eclipse.m2e.core.internal.embedder.MavenExecutionContext.execute(MavenExecutionContext.java:114)
+	at org.eclipse.m2e.core.internal.embedder.MavenExecutionContext.execute(MavenExecutionContext.java:101)
+	at org.eclipse.m2e.core.internal.embedder.MavenImpl.resolve(MavenImpl.java:772)
+	at org.eclipse.m2e.core.internal.embedder.MavenImpl.resolve(MavenImpl.java:749)
+	at org.eclipse.m2e.jdt.internal.DownloadSourcesJob.download(DownloadSourcesJob.java:330)
+	at org.eclipse.m2e.jdt.internal.DownloadSourcesJob.downloadAttachments(DownloadSourcesJob.java:304)
+	at org.eclipse.m2e.jdt.internal.DownloadSourcesJob.downloadMaven(DownloadSourcesJob.java:269)
+	at org.eclipse.m2e.jdt.internal.DownloadSourcesJob.downloadFilesAndPopulateToUpdate(DownloadSourcesJob.java:233)
+	at org.eclipse.m2e.jdt.internal.DownloadSourcesJob.lambda$0(DownloadSourcesJob.java:161)
+	at org.eclipse.m2e.core.internal.embedder.MavenExecutionContext.executeBare(MavenExecutionContext.java:179)
+	at org.eclipse.m2e.core.internal.embedder.MavenExecutionContext.execute(MavenExecutionContext.java:153)
+	at org.eclipse.m2e.core.internal.embedder.MavenExecutionContext.execute(MavenExecutionContext.java:101)
+	at org.eclipse.m2e.core.internal.embedder.MavenImpl.execute(MavenImpl.java:1374)
+	at org.eclipse.m2e.jdt.internal.DownloadSourcesJob.run(DownloadSourcesJob.java:161)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:63)
+2021-07-22 15:34:53,753 [Worker-0: Download sources and javadoc] INFO  o.e.m.c.i.e.AbstractTransferListenerAdapter - Downloaded https://repo.maven.apache.org/maven2/net/sf/appia/core/4.1.2-vanilladb-v1/core-4.1.2-vanilladb-v1-javadoc.jar
+2021-07-22 15:34:53,756 [Worker-0: Download sources and javadoc] ERROR o.e.m.j.internal.DownloadSourcesJob - Could not download javadoc for net.sf.appia:core:4.1.2-vanilladb-v1
+org.eclipse.core.runtime.CoreException: Could not resolve artifact net.sf.appia:core:jar:javadoc:4.1.2-vanilladb-v1
+	at org.eclipse.m2e.core.internal.embedder.MavenImpl.lambda$4(MavenImpl.java:804)
+	at org.eclipse.m2e.core.internal.embedder.MavenExecutionContext.executeBare(MavenExecutionContext.java:179)
+	at org.eclipse.m2e.core.internal.embedder.MavenExecutionContext.execute(MavenExecutionContext.java:114)
+	at org.eclipse.m2e.core.internal.embedder.MavenExecutionContext.execute(MavenExecutionContext.java:101)
+	at org.eclipse.m2e.core.internal.embedder.MavenImpl.resolve(MavenImpl.java:772)
+	at org.eclipse.m2e.core.internal.embedder.MavenImpl.resolve(MavenImpl.java:749)
+	at org.eclipse.m2e.jdt.internal.DownloadSourcesJob.download(DownloadSourcesJob.java:330)
+	at org.eclipse.m2e.jdt.internal.DownloadSourcesJob.downloadAttachments(DownloadSourcesJob.java:316)
+	at org.eclipse.m2e.jdt.internal.DownloadSourcesJob.downloadMaven(DownloadSourcesJob.java:269)
+	at org.eclipse.m2e.jdt.internal.DownloadSourcesJob.downloadFilesAndPopulateToUpdate(DownloadSourcesJob.java:233)
+	at org.eclipse.m2e.jdt.internal.DownloadSourcesJob.lambda$0(DownloadSourcesJob.java:161)
+	at org.eclipse.m2e.core.internal.embedder.MavenExecutionContext.executeBare(MavenExecutionContext.java:179)
+	at org.eclipse.m2e.core.internal.embedder.MavenExecutionContext.execute(MavenExecutionContext.java:153)
+	at org.eclipse.m2e.core.internal.embedder.MavenExecutionContext.execute(MavenExecutionContext.java:101)
+	at org.eclipse.m2e.core.internal.embedder.MavenImpl.execute(MavenImpl.java:1374)
+	at org.eclipse.m2e.jdt.internal.DownloadSourcesJob.run(DownloadSourcesJob.java:161)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:63)
+2021-07-22 15:34:53,764 [Worker-0: Download sources and javadoc] INFO  o.e.m.j.internal.DownloadSourcesJob - Downloaded sources for junit:junit:4.13.1
+2021-07-22 15:34:53,772 [Worker-0: Download sources and javadoc] INFO  o.e.m.c.i.e.AbstractTransferListenerAdapter - Downloaded file://D:\data\db_project\vanillacomm/lib/net/sf/appia/core/4.1.2-vanilladb-v1/core-4.1.2-vanilladb-v1-javadoc.jar
+2021-07-22 15:34:53,777 [Worker-0: Download sources and javadoc] ERROR o.e.m.j.internal.DownloadSourcesJob - Could not download javadoc for net.sf.appia:core:4.1.2-vanilladb-v1
+org.eclipse.core.runtime.CoreException: Could not resolve artifact net.sf.appia:core:jar:javadoc:4.1.2-vanilladb-v1
+	at org.eclipse.m2e.core.internal.embedder.MavenImpl.lambda$4(MavenImpl.java:804)
+	at org.eclipse.m2e.core.internal.embedder.MavenExecutionContext.executeBare(MavenExecutionContext.java:179)
+	at org.eclipse.m2e.core.internal.embedder.MavenExecutionContext.execute(MavenExecutionContext.java:114)
+	at org.eclipse.m2e.core.internal.embedder.MavenExecutionContext.execute(MavenExecutionContext.java:101)
+	at org.eclipse.m2e.core.internal.embedder.MavenImpl.resolve(MavenImpl.java:772)
+	at org.eclipse.m2e.core.internal.embedder.MavenImpl.resolve(MavenImpl.java:749)
+	at org.eclipse.m2e.jdt.internal.DownloadSourcesJob.download(DownloadSourcesJob.java:330)
+	at org.eclipse.m2e.jdt.internal.DownloadSourcesJob.downloadAttachments(DownloadSourcesJob.java:316)
+	at org.eclipse.m2e.jdt.internal.DownloadSourcesJob.downloadMaven(DownloadSourcesJob.java:269)
+	at org.eclipse.m2e.jdt.internal.DownloadSourcesJob.downloadFilesAndPopulateToUpdate(DownloadSourcesJob.java:233)
+	at org.eclipse.m2e.jdt.internal.DownloadSourcesJob.lambda$0(DownloadSourcesJob.java:161)
+	at org.eclipse.m2e.core.internal.embedder.MavenExecutionContext.executeBare(MavenExecutionContext.java:179)
+	at org.eclipse.m2e.core.internal.embedder.MavenExecutionContext.execute(MavenExecutionContext.java:153)
+	at org.eclipse.m2e.core.internal.embedder.MavenExecutionContext.execute(MavenExecutionContext.java:101)
+	at org.eclipse.m2e.core.internal.embedder.MavenImpl.execute(MavenImpl.java:1374)
+	at org.eclipse.m2e.jdt.internal.DownloadSourcesJob.run(DownloadSourcesJob.java:161)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:63)
+2021-07-22 15:34:53,991 [Worker-18: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2021-07-22 15:34:53,993 [Worker-18: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource
+2021-07-22 15:34:53,994 [Worker-18: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2021-07-22 15:34:53,994 [Worker-18: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory D:\data\db_project\vanillacomm\src\test\resources
+2021-07-22 15:35:17,567 [Worker-13: Importing Maven projects] INFO  o.e.m.c.i.l.LifecycleMappingFactory - Using org.eclipse.m2e.jdt.JarLifecycleMapping lifecycle mapping for MavenProject: org.vanilladb:core:0.4.2 @ D:\data\db_project\vanillacore\pom.xml.
+2021-07-22 15:35:17,657 [Worker-13: Importing Maven projects] INFO  o.e.m.c.i.l.LifecycleMappingFactory - Using org.eclipse.m2e.jdt.JarLifecycleMapping lifecycle mapping for MavenProject: org.vanilladb:bench:0.4.1 @ D:\data\db_project\vanillabench\pom.xml.
+2021-07-22 15:35:17,661 [Worker-13: Importing Maven projects] INFO  o.e.m.c.i.p.WorkspaceClassifierResolverManager - Resolving P/vanillacore: org.vanilladb:core:0.4.2 with classifier  to /vanillacore/target/classes
+2021-07-22 15:35:17,726 [Worker-13: Importing Maven projects] INFO  o.e.m.c.i.l.LifecycleMappingFactory - Using org.eclipse.m2e.jdt.JarLifecycleMapping lifecycle mapping for MavenProject: org.elasql:elasql:0.2.1 @ D:\data\db_project\elasql\pom.xml.
+2021-07-22 15:35:17,743 [Worker-13: Importing Maven projects] INFO  o.e.m.c.i.p.WorkspaceClassifierResolverManager - Resolving P/vanillacore: org.vanilladb:core:0.4.2 with classifier  to /vanillacore/target/classes
+2021-07-22 15:35:17,746 [Worker-13: Importing Maven projects] INFO  o.e.m.c.i.p.WorkspaceClassifierResolverManager - Resolving P/vanillacomm: org.vanilladb:comm:0.2.4 with classifier  to /vanillacomm/target/classes
+2021-07-22 15:35:17,807 [Worker-13: Importing Maven projects] INFO  o.e.m.c.i.l.LifecycleMappingFactory - Using org.eclipse.m2e.jdt.JarLifecycleMapping lifecycle mapping for MavenProject: org.elasql:bench:0.2.1 @ D:\data\db_project\elasqlbench\pom.xml.
+2021-07-22 15:35:17,814 [Worker-13: Importing Maven projects] INFO  o.e.m.c.i.p.WorkspaceClassifierResolverManager - Resolving P/vanillabench: org.vanilladb:bench:0.4.1 with classifier  to /vanillabench/target/classes
+2021-07-22 15:35:17,814 [Worker-13: Importing Maven projects] INFO  o.e.m.c.i.p.WorkspaceClassifierResolverManager - Resolving P/vanillacore: org.vanilladb:core:0.4.2 with classifier  to /vanillacore/target/classes
+2021-07-22 15:35:17,816 [Worker-13: Importing Maven projects] INFO  o.e.m.c.i.p.WorkspaceClassifierResolverManager - Resolving P/elasql: org.elasql:elasql:0.2.1 with classifier  to /elasql/target/classes
+2021-07-22 15:35:17,816 [Worker-13: Importing Maven projects] INFO  o.e.m.c.i.p.WorkspaceClassifierResolverManager - Resolving P/vanillacomm: org.vanilladb:comm:0.2.4 with classifier  to /vanillacomm/target/classes
+2021-07-22 15:35:18,273 [Worker-13: Importing Maven projects] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Adding source folder /vanillacore/src/main/java
+2021-07-22 15:35:18,274 [Worker-13: Importing Maven projects] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Adding resource folder /vanillacore/src/main/resources
+2021-07-22 15:35:18,274 [Worker-13: Importing Maven projects] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Adding source folder /vanillacore/src/test/java
+2021-07-22 15:35:18,274 [Worker-13: Importing Maven projects] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Adding resource folder /vanillacore/src/test/resources
+2021-07-22 15:35:18,303 [Worker-13: Importing Maven projects] INFO  o.e.m.c.i.p.ProjectConfigurationManager - Imported and configured 1 project(s) in 1 sec
+2021-07-22 15:35:19,916 [Worker-6: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2021-07-22 15:35:19,916 [Worker-6: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered properties files.
+2021-07-22 15:35:19,916 [Worker-6: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 2 resources
+2021-07-22 15:35:19,969 [Worker-6: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - The encoding used to copy filtered properties files have not been set. This means that the same encoding will be used to copy filtered properties files as when copying other filtered resources. This might not be what you want! Run your build with --debug to see which files might be affected. Read more at https://maven.apache.org/plugins/maven-resources-plugin/examples/filtering-properties-files.html
+2021-07-22 15:35:19,973 [Worker-6: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2021-07-22 15:35:19,973 [Worker-6: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered properties files.
+2021-07-22 15:35:19,973 [Worker-6: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 2 resources
+2021-07-22 15:35:19,986 [Worker-6: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2021-07-22 15:35:19,986 [Worker-6: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered properties files.
+2021-07-22 15:35:19,986 [Worker-6: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 2 resources
+2021-07-22 15:35:20,602 [Worker-5: Building] INFO  o.e.m.c.i.p.WorkspaceClassifierResolverManager - Resolving P/vanillacore: org.vanilladb:core:0.4.2 with classifier  to /vanillacore/target/classes
+2021-07-22 15:35:20,858 [Worker-5: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2021-07-22 15:35:20,860 [Worker-5: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource
+2021-07-22 15:35:20,860 [Worker-5: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource
+2021-07-22 15:35:20,860 [Worker-5: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource
+2021-07-22 15:35:20,861 [Worker-5: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2021-07-22 15:35:20,863 [Worker-5: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 3 resources
+2021-07-22 15:35:20,877 [Worker-5: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2021-07-22 15:35:20,877 [Worker-5: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory D:\data\db_project\vanillabench\src\test\resources
+2021-07-22 15:35:21,418 [Worker-5: Building] INFO  o.e.m.c.i.p.WorkspaceClassifierResolverManager - Resolving P/vanillacore: org.vanilladb:core:0.4.2 with classifier  to /vanillacore/target/classes
+2021-07-22 15:35:21,422 [Worker-5: Building] INFO  o.e.m.c.i.p.WorkspaceClassifierResolverManager - Resolving P/vanillacomm: org.vanilladb:comm:0.2.4 with classifier  to /vanillacomm/target/classes
+2021-07-22 15:35:21,427 [Worker-5: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2021-07-22 15:35:21,427 [Worker-5: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource
+2021-07-22 15:35:21,428 [Worker-5: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2021-07-22 15:35:21,429 [Worker-5: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 4 resources
+2021-07-22 15:35:21,443 [Worker-5: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2021-07-22 15:35:21,443 [Worker-5: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory D:\data\db_project\elasql\src\test\resources
+2021-07-22 15:35:21,973 [Worker-4: Building] INFO  o.e.m.c.i.p.WorkspaceClassifierResolverManager - Resolving P/vanillabench: org.vanilladb:bench:0.4.1 with classifier  to /vanillabench/target/classes
+2021-07-22 15:35:21,973 [Worker-4: Building] INFO  o.e.m.c.i.p.WorkspaceClassifierResolverManager - Resolving P/vanillacore: org.vanilladb:core:0.4.2 with classifier  to /vanillacore/target/classes
+2021-07-22 15:35:21,976 [Worker-4: Building] INFO  o.e.m.c.i.p.WorkspaceClassifierResolverManager - Resolving P/elasql: org.elasql:elasql:0.2.1 with classifier  to /elasql/target/classes
+2021-07-22 15:35:21,976 [Worker-4: Building] INFO  o.e.m.c.i.p.WorkspaceClassifierResolverManager - Resolving P/vanillacomm: org.vanilladb:comm:0.2.4 with classifier  to /vanillacomm/target/classes
+2021-07-22 15:35:21,981 [Worker-4: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2021-07-22 15:35:21,981 [Worker-4: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource
+2021-07-22 15:35:21,982 [Worker-4: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2021-07-22 15:35:21,984 [Worker-4: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 6 resources
+2021-07-22 15:35:22,006 [Worker-4: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2021-07-22 15:35:22,006 [Worker-4: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory D:\data\db_project\elasqlbench\src\test\resources
+2021-07-22 16:04:50,118 [main] INFO  o.e.m.c.i.p.WorkspaceClassifierResolverManager - Resolving P/vanillabench: org.vanilladb:bench:0.4.1 with classifier null to /vanillabench/target/classes
+2021-07-22 16:04:50,119 [main] INFO  o.e.m.c.i.p.WorkspaceClassifierResolverManager - Resolving P/vanillacore: org.vanilladb:core:0.4.2 with classifier null to /vanillacore/target/classes
+2021-07-22 16:04:50,121 [main] INFO  o.e.m.c.i.p.WorkspaceClassifierResolverManager - Resolving P/elasql: org.elasql:elasql:0.2.1 with classifier null to /elasql/target/classes
+2021-07-22 16:04:50,121 [main] INFO  o.e.m.c.i.p.WorkspaceClassifierResolverManager - Resolving P/vanillacomm: org.vanilladb:comm:0.2.4 with classifier null to /vanillacomm/target/classes
+2021-07-22 16:05:19,891 [main] INFO  o.e.m.c.i.p.WorkspaceClassifierResolverManager - Resolving P/vanillabench: org.vanilladb:bench:0.4.1 with classifier null to /vanillabench/target/classes
+2021-07-22 16:05:19,891 [main] INFO  o.e.m.c.i.p.WorkspaceClassifierResolverManager - Resolving P/vanillacore: org.vanilladb:core:0.4.2 with classifier null to /vanillacore/target/classes
+2021-07-22 16:05:19,893 [main] INFO  o.e.m.c.i.p.WorkspaceClassifierResolverManager - Resolving P/elasql: org.elasql:elasql:0.2.1 with classifier null to /elasql/target/classes
+2021-07-22 16:05:19,893 [main] INFO  o.e.m.c.i.p.WorkspaceClassifierResolverManager - Resolving P/vanillacomm: org.vanilladb:comm:0.2.4 with classifier null to /vanillacomm/target/classes
