@@ -47,6 +47,10 @@ public class Tuple implements Serializable {
 		this.timestamp = timestamp;
 	}
 
+	public Boolean isHaveTimeStamp(){
+		return timestamp != null;
+	}
+
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();

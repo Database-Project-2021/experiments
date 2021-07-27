@@ -111,12 +111,14 @@ public class ConnectionMgr implements VanillaCommServerListener {
 			}
 			
 			// MODIFIED: Switch between with and without time interval
-			for (Tuple t : ts.getTupleSet()){
-				if (t.timestamp != null)
-					Elasql.remoteRecReceiver().cacheRemoteRecordWithTimeStamp(t);
-				else
-					Elasql.remoteRecReceiver().cacheRemoteRecord(t);
-			}
+			// for (Tuple t : ts.getTupleSet()){
+			// 	if (t.timestamp != null)
+					// Elasql.remoteRecReceiver().cacheRemoteRecordWithTimeStamp(t);
+			// 	else
+			// 		Elasql.remoteRecReceiver().cacheRemoteRecord(t);
+			// }
+			for (Tuple t : ts.getTupleSet())
+				Elasql.remoteRecReceiver().cacheRemoteRecord(t);
 			
 		} else
 			throw new IllegalArgumentException();

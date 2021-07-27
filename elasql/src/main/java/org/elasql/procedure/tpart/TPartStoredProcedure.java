@@ -262,8 +262,8 @@ public abstract class TPartStoredProcedure<H extends StoredProcedureParamHelper>
 						CachedRecord rec = cache.read(pushInfo.getRecord(), txNum);
 						cachedEntrySet.add(new CachedEntryKey(pushInfo.getRecord(), txNum, pushInfo.getDestTxNum()));
 						// MODIFIED: Pass timestamp
-						// rs.addTuple(pushInfo.getRecord(), txNum, pushInfo.getDestTxNum(), rec);
-						rs.addTuple(pushInfo.getRecord(), txNum, pushInfo.getDestTxNum(), rec, System.nanoTime());
+						rs.addTuple(pushInfo.getRecord(), txNum, pushInfo.getDestTxNum(), rec);
+						// rs.addTuple(pushInfo.getRecord(), txNum, pushInfo.getDestTxNum(), rec, System.nanoTime());
 					}
 
 					// Push to the remote
@@ -308,8 +308,8 @@ public abstract class TPartStoredProcedure<H extends StoredProcedureParamHelper>
 						// TODO deal with null value record
 						rec.setSrcTxNum(sinkTxnNum);
 						// MODIFIED: Pass timestamp
-						// rs.addTuple(pushInfo.getRecord(), sinkTxnNum, pushInfo.getDestTxNum(), rec);
-						rs.addTuple(pushInfo.getRecord(), txNum, pushInfo.getDestTxNum(), rec, System.nanoTime());
+						rs.addTuple(pushInfo.getRecord(), sinkTxnNum, pushInfo.getDestTxNum(), rec);
+						// rs.addTuple(pushInfo.getRecord(), txNum, pushInfo.getDestTxNum(), rec, System.nanoTime());
 					}
 					timer.stopComponentTimer("Read from sink");
 //				}

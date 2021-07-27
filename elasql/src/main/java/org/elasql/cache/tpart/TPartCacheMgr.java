@@ -138,7 +138,11 @@ public class TPartCacheMgr implements RemoteRecordReceiver {
 
 	@Override
 	public void cacheRemoteRecord(Tuple t) {
-		passToTheNextTx(t.key, t.rec, t.srcTxNum, t.destTxNum, true);
+		if(t.isHaveTimeStamp()){
+			passToTheNextTx(t.key, t.rec, t.srcTxNum, t.destTxNum, t.timestamp, true);
+		}else{
+			passToTheNextTx(t.key, t.rec, t.srcTxNum, t.destTxNum, true);
+		}
 	}
 
 	//MODIFIED: Implement inherent method
