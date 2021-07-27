@@ -129,16 +129,16 @@ public class TPartCacheMgr implements RemoteRecordReceiver {
 		synchronized (prepareAnchor(k)) {
 			exchange.put(k, rec);
 			prepareAnchor(k).notifyAll();
-		}
 
-		// MODIFIED: Record transmit interval
-		Long transmit_interval = System.nanoTime() - TimeStamp;
-		Timer.getLocalTimer().recordTime("Trans Time Of Remote Read", transmit_interval);
+			// MODIFIED: Record transmit interval
+			long transmit_interval = 420 - TimeStamp;
+			Timer.getLocalTimer().recordTime("Trans Time Of Remote Read", transmit_interval);
+		}
 	}
 
 	@Override
 	public void cacheRemoteRecord(Tuple t) {
-		if(t.isHaveTimeStamp()){
+		if(t.doesHaveTimeStamp()){
 			passToTheNextTx(t.key, t.rec, t.srcTxNum, t.destTxNum, t.timestamp, true);
 		}else{
 			passToTheNextTx(t.key, t.rec, t.srcTxNum, t.destTxNum, true);

@@ -55,7 +55,7 @@ public class TupleSet implements Serializable {
 		tuples.add(new Tuple(key, srcTxNum, destTxNum, rec));
 	}
 
-	public void addTuple(PrimaryKey key, long srcTxNum, long destTxNum, CachedRecord rec, Long timestamp) {
+	public void addTuple(PrimaryKey key, long srcTxNum, long destTxNum, CachedRecord rec, long timestamp) {
 		// Clone the record to prevent concurrent access from communication threads
 		rec = new CachedRecord(rec);
 		tuples.add(new Tuple(key, srcTxNum, destTxNum, rec, timestamp));

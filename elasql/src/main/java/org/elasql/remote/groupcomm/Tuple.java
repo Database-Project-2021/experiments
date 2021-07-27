@@ -29,17 +29,17 @@ public class Tuple implements Serializable {
 	public CachedRecord rec;
 	public long srcTxNum;
 	public long destTxNum;
-	public Long timestamp;
+	public long timestamp;
 
 	public Tuple(PrimaryKey key, long srcTxNum, long destTxNum, CachedRecord rec) {
 		this.key = key;
 		this.rec = rec;
 		this.srcTxNum = srcTxNum;
 		this.destTxNum = destTxNum;
-		this.timestamp = null;
+		this.timestamp = -1;
 	}
 
-	public Tuple(PrimaryKey key, long srcTxNum, long destTxNum, CachedRecord rec, Long timestamp) {
+	public Tuple(PrimaryKey key, long srcTxNum, long destTxNum, CachedRecord rec, long timestamp) {
 		this.key = key;
 		this.rec = rec;
 		this.srcTxNum = srcTxNum;
@@ -47,8 +47,8 @@ public class Tuple implements Serializable {
 		this.timestamp = timestamp;
 	}
 
-	public Boolean isHaveTimeStamp(){
-		return timestamp != null;
+	public Boolean doesHaveTimeStamp(){
+		return timestamp != -1;
 	}
 
 	@Override

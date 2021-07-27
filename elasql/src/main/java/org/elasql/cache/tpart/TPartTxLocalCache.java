@@ -22,12 +22,6 @@ public class TPartTxLocalCache {
 	private Map<PrimaryKey, CachedRecord> recordCache = new HashMap<PrimaryKey, CachedRecord>();
 	private long localStorageId;
 
-	static {
-		// For Debugging
-		// TimerStatistics.startReporting();
-		TransactionStatisticsRecorder.startRecording();
-	}
-
 	public TPartTxLocalCache(Transaction tx) {
 		this.tx = tx;
 		this.txNum = tx.getTransactionNumber();
@@ -104,7 +98,7 @@ public class TPartTxLocalCache {
 	 * 
 	 * @return the specified record
 	 */
-	public CachedRecord read(PrimaryKey key, long src, Boolean isKeyRemoteRead, Boolean isTxnContainRemoteRead) {
+	public CachedRecord read(PrimaryKey key, long src, Boolean isKeyRemoteRead, Boolean isPushPlan) {
 		
 		CachedRecord rec = recordCache.get(key);
 		if (rec != null)
@@ -117,7 +111,7 @@ public class TPartTxLocalCache {
 
 		// MODIFIED: Wait Time For Prev Txn On Slave
 		// Start a thread-local timer	
-		if(isTxnContainRemoteRead)
+		if(isPushPlan)
 			Timer.getLocalTimer().startComponentTimer("Wait Time For Prev Txn On Slave");
 		
 		rec = cacheMgr.takeFromTx(key, src, txNum);
@@ -129,7 +123,7 @@ public class TPartTxLocalCache {
 
 		// MODIFIED: Wait Time For Prev Txn On Slave
 		// Stop the timer for the whole execution
-		if(isTxnContainRemoteRead)
+		if(isPushPlan)
 			Timer.getLocalTimer().stopComponentTimer("Wait Time For Prev Txn On Slave");
 
 		recordCache.put(key, rec);

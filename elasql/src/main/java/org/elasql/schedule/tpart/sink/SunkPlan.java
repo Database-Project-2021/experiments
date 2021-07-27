@@ -39,13 +39,16 @@ public class SunkPlan {
 
 	// MODIFIED: Add variable to store the Txn node
 	private TxNode node;
-	private Boolean isRemoteReadPlan = false;
+	private Boolean isRemoteReadPlan;
+	private Boolean isPushPlan;
 
 	// MODIFIED: Add variable to pass the TxNode
 	public SunkPlan(int sinkProcessId, boolean isHereMaster, TxNode node) {
 		this.sinkProcessId = sinkProcessId;
 		this.isHereMaster = isHereMaster;
 		this.node = node;
+		this.isRemoteReadPlan = true;
+		this.isPushPlan = true;
 	}
 
 	public void addReadingInfo(PrimaryKey key, long srcTxNum) {
@@ -64,6 +67,8 @@ public class SunkPlan {
 			pushingInfoMap.put(targetNodeId, pushInfos);
 		}
 		pushInfos.add(new PushInfo(destTxNum, targetNodeId, key));
+		// MODIFIED: 
+		isPushPlan = true;
 		// MODIFIED: Check whether the plan contains remote read or not.
 		if(isRemoteRead(key)){
 			isRemoteReadPlan = true;
@@ -187,7 +192,10 @@ public class SunkPlan {
 	public Boolean isRemoteRead(PrimaryKey key){
 		for(Edge e : this.node.getReadEdges()){
 			if(e.getResourceKey() == key){
-				return e.getTarget().getPartId() == Elasql.serverId();
+				if(e.getTarget().getPartId() != Elasql.serverId())
+					return true;
+				else
+					return false;
 			}
 		}
 		return false;
@@ -196,6 +204,11 @@ public class SunkPlan {
 	// MODIFIED: Return "isRemoteReadPlan"
 	public Boolean isContainRemoteRead(){
 		return isRemoteReadPlan;
+	}
+
+	// MODIFIED: Return "isPushPlan"
+	public Boolean isContainPush(){
+		return isPushPlan;
 	}
 	
 	/*

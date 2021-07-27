@@ -18,6 +18,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.elasql.server.Elasql;
 import org.vanilladb.core.server.VanillaDb;
 import org.vanilladb.core.server.task.Task;
 import org.vanilladb.core.util.Timer;
@@ -25,6 +26,7 @@ import org.vanilladb.core.util.Timer;
 public class TransactionStatisticsRecorder extends Task {
 	private static Logger logger = Logger.getLogger(TransactionStatisticsRecorder.class.getName());
 	
+	// private static final String FILENAME_PREFIX = "auto-bencher-workspace/results/transaction-statistics"+Elasql.serverId();
 	private static final String FILENAME_PREFIX = "transaction-statistics";
 	private static final String TRANSACTION_ID_COLUMN = "Transaction ID";
 	private static final String FIRST_STATS_COLUMN = "Execution Time";
@@ -60,6 +62,8 @@ public class TransactionStatisticsRecorder extends Task {
 	private static AtomicBoolean isRecording = new AtomicBoolean(false);
 	private static BlockingQueue<TransactionStatistics> queue
 		= new ArrayBlockingQueue<TransactionStatistics>(100000);
+
+	private long[] avgData;
 	
 	public static void startRecording() {
 		if (!isRecording.getAndSet(true)) {
@@ -105,6 +109,8 @@ public class TransactionStatisticsRecorder extends Task {
 				data = convertStatisticsToArray(header, columnToIndex, stats);
 				rows.add(data);
 			}
+
+			// avgData = new long[6];
 			
 			if (logger.isLoggable(Level.INFO)) {
 				String log = String.format("No more statistics coming in last %d seconds. Start generating a report.",
@@ -125,6 +131,14 @@ public class TransactionStatisticsRecorder extends Task {
 		header.add(TRANSACTION_ID_COLUMN);
 		header.add(FIRST_STATS_COLUMN);
 		return header;
+	}
+
+	private void addToAvg(List<long[]> rows){
+		for(long[] row : rows){
+			for(int i=0; i<row.length; i++){
+				avgData[i] = avgData[i] + row[i];
+			}
+		}
 	}
 	
 	private Map<String, Integer> createHeaderToIndexMapping(List<String> header) {
@@ -153,8 +167,31 @@ public class TransactionStatisticsRecorder extends Task {
 		}
 		return data;
 	}
-	
+	private List<long[]> addAvgRow(List<long[]>rows, int numOfColumn){
+
+		long[] avgRow = new long[numOfColumn];
+		// skip idx=0 since idx=0 represents transaction numbers
+		avgRow[0] = 100; // -1 stands for avg
+		for (int idx=1; idx<numOfColumn; idx++){
+			long avg = 0;
+			for (long [] row : rows){
+				avg += row[idx];
+			}
+			avg = avg / rows.size();
+			avgRow[idx] = avg;
+		}
+
+		// rows.add(avgRow);
+		// return rows;
+		List<long[]> avgRows = new ArrayList<long[]>();
+		avgRows.add(avgRow);
+		return avgRows;
+	}
 	private void generateOutputFile(List<String> header, List<long[]> rows) {
+		// add average row
+		// MODIFIED: 
+		rows = addAvgRow(rows, header.size());
+
 		int columnCount = header.size();
 		String fileName = generateOutputFileName();
 		try (BufferedWriter writer = createOutputFile(fileName)) {

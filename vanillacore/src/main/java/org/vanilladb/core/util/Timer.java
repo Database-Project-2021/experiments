@@ -114,7 +114,7 @@ public class Timer {
 			subTimers.put(component, timer);
 			componenents.add(component);
 		}
-		timer.startTimer();
+		//timer.startTimer();
 	}
 
 	public long getComponentCount(Object component) {
