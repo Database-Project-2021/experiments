@@ -37,6 +37,8 @@ public class TPartCacheMgr implements RemoteRecordReceiver {
 
 	private Map<PrimaryKey, CachedRecord> recordCache;
 
+	private Map<CachedEntryKey, Long> time_interval_map;
+
 	private final Object anchors[] = new Object[1009];
 
 	public TPartCacheMgr() {
@@ -46,6 +48,7 @@ public class TPartCacheMgr implements RemoteRecordReceiver {
 
 		recordCache = new ConcurrentHashMap<PrimaryKey, CachedRecord>(FusionTable.EXPECTED_MAX_SIZE + 1000);
 		exchange = new ConcurrentHashMap<CachedEntryKey, CachedRecord>(FusionTable.EXPECTED_MAX_SIZE + 1000);
+		time_interval_map = new ConcurrentHashMap<CachedEntryKey, Long>();
 
 		// new PeriodicalJob(5000, 600000, new Runnable() {
 		// @Override
@@ -78,10 +81,11 @@ public class TPartCacheMgr implements RemoteRecordReceiver {
 	}
 
 	CachedRecord takeFromTx(PrimaryKey key, long src, long dest) {
-		// MODIFIED
+		// MODIFIED:
 		Timer.getLocalTimer().startComponentTimer("Read from Tx");
 		// try {
 		CachedEntryKey k = new CachedEntryKey(key, src, dest);
+
 		synchronized (prepareAnchor(k)) {
 			try {
 				// Debug: Tracing the waiting key
@@ -94,6 +98,9 @@ public class TPartCacheMgr implements RemoteRecordReceiver {
 
 				// Debug: Tracing the waiting key
 				// Thread.currentThread().setName("Tx." + dest);
+				Long time_interval = time_interval_map.remove(k);
+				Timer.getLocalTimer().recordTime("Trans Time Of Remote Read", time_interval);
+				System.out.printf("[%d] A Time_Interval added to timer: Interval = %d\n", (System.nanoTime() / 1000), time_interval);
 
 				return exchange.remove(k);
 			} catch (InterruptedException e) {
@@ -126,13 +133,17 @@ public class TPartCacheMgr implements RemoteRecordReceiver {
 
 		// MODIFIED: Record transmit interval
 		long transmit_interval = (System.nanoTime() / 1000) - TimeStamp;
-		System.out.println("Calc Trans Time: " + transmit_interval);
-		Timer.getLocalTimer().recordTime("Trans Time Of Remote Read", transmit_interval);
+		// System.out.println("Calc Trans Time: " + transmit_interval);
+		
+		// Timer.getLocalTimer().recordTime("Trans Time Of Remote Read", transmit_interval);
 		// System.out.println(Timer.getLocalTimer().toString());
 
 		CachedEntryKey k = new CachedEntryKey(key, src, dest);
 		synchronized (prepareAnchor(k)) {
 			exchange.put(k, rec);
+			// MODIFIED: 
+			time_interval_map.put(k, transmit_interval);
+			System.out.printf("[%d] A Time_Interval added to map: Interval = %d\n", (System.nanoTime()/1000), time_interval_map.get(k));
 			prepareAnchor(k).notifyAll();
 		}
 	}
