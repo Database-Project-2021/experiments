@@ -61,6 +61,7 @@ public class Timer {
 		// MODIFIED: Add method to set timer's time directly
 		public void setTimer(long time_interval){
 			totalTime = time_interval;
+			count++;
 		}
 
 		public long getTotalTime() {
@@ -113,7 +114,9 @@ public class Timer {
 			timer.setTimer(time);
 			subTimers.put(component, timer);
 			componenents.add(component);
+			System.out.printf("A Transmit Time has been added, Time: %d\n", time);
 		}
+		
 		//timer.startTimer();
 	}
 

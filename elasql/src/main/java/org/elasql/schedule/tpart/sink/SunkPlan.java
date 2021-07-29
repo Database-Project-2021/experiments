@@ -40,15 +40,15 @@ public class SunkPlan {
 	// MODIFIED: Add variable to store the Txn node
 	private TxNode node;
 	private Boolean isRemoteReadPlan;
-	private Boolean isPushPlan;
+	private Boolean isRemotePushPlan;
 
 	// MODIFIED: Add variable to pass the TxNode
 	public SunkPlan(int sinkProcessId, boolean isHereMaster, TxNode node) {
 		this.sinkProcessId = sinkProcessId;
 		this.isHereMaster = isHereMaster;
 		this.node = node;
-		this.isRemoteReadPlan = true;
-		this.isPushPlan = true;
+		this.isRemoteReadPlan = false;
+		this.isRemotePushPlan = false;
 	}
 
 	public void addReadingInfo(PrimaryKey key, long srcTxNum) {
@@ -56,6 +56,11 @@ public class SunkPlan {
 		if (readingInfoMap == null)
 			readingInfoMap = new HashMap<PrimaryKey, Long>();
 		readingInfoMap.put(key, srcTxNum);
+
+		// MODIFIED: Check whether the plan contains remote read or not.
+		if(isRemoteRead(key)){
+			isRemoteReadPlan = true;
+		}
 	}
 
 	public void addPushingInfo(PrimaryKey key, int targetNodeId, long destTxNum) {
@@ -67,12 +72,10 @@ public class SunkPlan {
 			pushingInfoMap.put(targetNodeId, pushInfos);
 		}
 		pushInfos.add(new PushInfo(destTxNum, targetNodeId, key));
-		// MODIFIED: 
-		isPushPlan = true;
-		// MODIFIED: Check whether the plan contains remote read or not.
-		if(isRemoteRead(key)){
-			isRemoteReadPlan = true;
-		}
+
+		// MODIFIED: Check whether the plan contains push plan or not.
+		if(targetNodeId != Elasql.serverId())
+			isRemotePushPlan = true;
 	}
 
 	public void addLocalPassingTarget(PrimaryKey key, long destTxNum) {
@@ -88,6 +91,10 @@ public class SunkPlan {
 			sinkPushingInfoMap.put(destNodeId, pushInfos);
 		}
 		pushInfos.add(new PushInfo(destTxNum, destNodeId, key));
+
+		// MODIFIED: Check whether the plan contains push plan or not.
+		if(destNodeId != Elasql.serverId())
+			isRemotePushPlan = true;
 	}
 
 	public void addSinkReadingInfo(PrimaryKey key) {
@@ -206,9 +213,9 @@ public class SunkPlan {
 		return isRemoteReadPlan;
 	}
 
-	// MODIFIED: Return "isPushPlan"
-	public Boolean isContainPush(){
-		return isPushPlan;
+	// MODIFIED: Return "isRemotePushPlan"
+	public Boolean isContainRemotePush(){
+		return isRemotePushPlan;
 	}
 	
 	/*

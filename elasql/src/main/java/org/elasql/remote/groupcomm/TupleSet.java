@@ -48,17 +48,18 @@ public class TupleSet implements Serializable {
 		return tuples;
 	}
 
-	public void addTuple(PrimaryKey key, long srcTxNum, long destTxNum,
-			CachedRecord rec) {
-		// Clone the record to prevent concurrent access from communication threads
-		rec = new CachedRecord(rec);
-		tuples.add(new Tuple(key, srcTxNum, destTxNum, rec));
-	}
+	// public void addTuple(PrimaryKey key, long srcTxNum, long destTxNum, CachedRecord rec) {
+	// 	// Clone the record to prevent concurrent access from communication threads
+	// 	rec = new CachedRecord(rec);
+	// 	tuples.add(new Tuple(key, srcTxNum, destTxNum, rec));
+	// 	// System.out.printf("Tuple Added, From %d to %d\n", srcTxNum, destTxNum);
+	// }
 
-	public void addTuple(PrimaryKey key, long srcTxNum, long destTxNum, CachedRecord rec, long timestamp) {
+	public void addTuple(PrimaryKey key, long srcTxNum, long destTxNum, CachedRecord rec) {
 		// Clone the record to prevent concurrent access from communication threads
 		rec = new CachedRecord(rec);
-		tuples.add(new Tuple(key, srcTxNum, destTxNum, rec, timestamp));
+		tuples.add(new Tuple(key, srcTxNum, destTxNum, rec, System.nanoTime() / 1000));
+		// System.out.printf("Tuple Added, From %d to %d, TimeStamp: %d\n", srcTxNum, destTxNum, timestamp);
 	}
 
 	public int sinkId() {

@@ -76,7 +76,9 @@ public class TransactionStatisticsRecorder extends Task {
 		if (!isRecording.get())
 			return;
 			
+		// MODIFIED: Print the timer
 		TransactionStatistics stats = new TransactionStatistics(txNum);
+		System.out.print(timer.toString());
 		for (Object component : timer.getComponents())
 			stats.addRecord(component.toString(), timer.getComponentTime(component));
 		queue.add(stats);
@@ -175,9 +177,9 @@ public class TransactionStatisticsRecorder extends Task {
 		for (int idx=1; idx<numOfColumn; idx++){
 			long avg = 0;
 			for (long [] row : rows){
-				avg += row[idx];
+				avg += (row[idx] / rows.size());
 			}
-			avg = avg / rows.size();
+			// avg = avg / rows.size();
 			avgRow[idx] = avg;
 		}
 
@@ -190,7 +192,7 @@ public class TransactionStatisticsRecorder extends Task {
 	private void generateOutputFile(List<String> header, List<long[]> rows) {
 		// add average row
 		// MODIFIED: 
-		rows = addAvgRow(rows, header.size());
+		// rows = addAvgRow(rows, header.size());
 
 		int columnCount = header.size();
 		String fileName = generateOutputFileName();

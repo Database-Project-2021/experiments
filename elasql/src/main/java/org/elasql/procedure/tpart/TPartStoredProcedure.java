@@ -119,7 +119,7 @@ public abstract class TPartStoredProcedure<H extends StoredProcedureParamHelper>
 				Timer.getLocalTimer().startComponentTimer("Average Time Of R/W Txn");
 
 			// MODIFIED: 
-			if (plan.isContainRemoteRead()) {
+			if (plan.isContainRemotePush()) {
 				Timer.getLocalTimer().startComponentTimer("Total Time Remote Read On Slave");
 				Timer.getLocalTimer().startComponentTimer("CCLock Time Remote Read On Slave");
 			}
@@ -128,7 +128,7 @@ public abstract class TPartStoredProcedure<H extends StoredProcedureParamHelper>
 			getConservativeLocks();
 			Timer.getLocalTimer().stopComponentTimer("Get locks");
 
-			if (plan.isContainRemoteRead())
+			if (plan.isContainRemotePush())
 				Timer.getLocalTimer().stopComponentTimer("CCLock Time Remote Read On Slave");
 			
 			// record time of executing tx logic in the function
@@ -138,7 +138,7 @@ public abstract class TPartStoredProcedure<H extends StoredProcedureParamHelper>
 			tx.commit();
 			Timer.getLocalTimer().stopComponentTimer("tx commit");
 
-			if (plan.isContainRemoteRead())
+			if (plan.isContainRemotePush())
 				Timer.getLocalTimer().stopComponentTimer("Total Time Remote Read On Slave");
 
 			if(tx.isReadOnly())
@@ -237,7 +237,7 @@ public abstract class TPartStoredProcedure<H extends StoredProcedureParamHelper>
 				if (!readings.containsKey(k)) {
 					long srcTxNum = plan.getReadSrcTxNum(k);
 					// MODIFIED: cache read for timer
-					readings.put(k, cache.read(k, srcTxNum, plan.isRemoteRead(k), plan.isContainPush()));
+					readings.put(k, cache.read(k, srcTxNum, plan.isRemoteRead(k), plan.isContainRemotePush()));
 					// readings.put(k, cache.read(k, srcTxNum, plan.isRemoteRead(k), plan.isContainRemoteRead()));
 					cachedEntrySet.add(new CachedEntryKey(k, srcTxNum, txNum));
 				}
@@ -263,8 +263,9 @@ public abstract class TPartStoredProcedure<H extends StoredProcedureParamHelper>
 						CachedRecord rec = cache.read(pushInfo.getRecord(), txNum);
 						cachedEntrySet.add(new CachedEntryKey(pushInfo.getRecord(), txNum, pushInfo.getDestTxNum()));
 						// MODIFIED: Pass timestamp
-						//rs.addTuple(pushInfo.getRecord(), txNum, pushInfo.getDestTxNum(), rec);
-						rs.addTuple(pushInfo.getRecord(), txNum, pushInfo.getDestTxNum(), rec, 87);
+						// rs.addTuple(pushInfo.getRecord(), txNum, pushInfo.getDestTxNum(), rec);
+						rs.addTuple(pushInfo.getRecord(), txNum, pushInfo.getDestTxNum(), rec);
+						// rs.addTuple(pushInfo.getRecord(), txNum, pushInfo.getDestTxNum(), rec, 87);
 
 					}
 
@@ -310,8 +311,9 @@ public abstract class TPartStoredProcedure<H extends StoredProcedureParamHelper>
 						// TODO deal with null value record
 						rec.setSrcTxNum(sinkTxnNum);
 						// MODIFIED: Pass timestamp
-						//rs.addTuple(pushInfo.getRecord(), sinkTxnNum, pushInfo.getDestTxNum(), rec);
-						rs.addTuple(pushInfo.getRecord(), txNum, pushInfo.getDestTxNum(), rec, 87);
+						// rs.addTuple(pushInfo.getRecord(), sinkTxnNum, pushInfo.getDestTxNum(), rec);
+						rs.addTuple(pushInfo.getRecord(), sinkTxnNum, pushInfo.getDestTxNum(), rec);
+						//rs.addTuple(pushInfo.getRecord(), sinkTxnNum, pushInfo.getDestTxNum(), rec, 87);
 					}
 					timer.stopComponentTimer("Read from sink");
 //				}

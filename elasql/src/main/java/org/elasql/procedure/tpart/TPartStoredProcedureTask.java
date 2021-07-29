@@ -16,7 +16,7 @@ public class TPartStoredProcedureTask
 	
 	static {
 		// For Debugging
-//		TimerStatistics.startReporting();
+		// TimerStatistics.startReporting
 		TransactionStatisticsRecorder.startRecording();
 	}
 

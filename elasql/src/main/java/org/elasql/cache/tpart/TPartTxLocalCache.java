@@ -96,6 +96,9 @@ public class TPartTxLocalCache {
 	 * @param isRemoteRead
 	 * 			  the boolean to indicate whether the read is remote or not, for timer used
 	 * 
+	 * @param isPushPlan
+	 * 			  the boolean to indicate whether SunkPlan of the read contains push or not, for timer used
+	 * 
 	 * @return the specified record
 	 */
 	public CachedRecord read(PrimaryKey key, long src, Boolean isKeyRemoteRead, Boolean isPushPlan) {
