@@ -7,6 +7,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.concurrent.atomic.AtomicLong;
 
 import org.elasql.cache.CachedRecord;
 import org.elasql.cache.RemoteRecordReceiver;
@@ -39,7 +40,11 @@ public class TPartCacheMgr implements RemoteRecordReceiver {
 
 	private Map<CachedEntryKey, Long> time_interval_map;
 
+	// private CachedEntryKey time_interval_key;
+	// private AtomicLong time_interval_value;
+
 	private final Object anchors[] = new Object[1009];
+	private final long time_interval_anchors[] = new long[1009];
 
 	public TPartCacheMgr() {
 		for (int i = 0; i < anchors.length; ++i) {
@@ -80,6 +85,24 @@ public class TPartCacheMgr implements RemoteRecordReceiver {
 		return anchors[hash];
 	}
 
+	private void setTimerIntervalAnchor(Object o, long time_interval) {
+		int hash = o.hashCode() % time_interval_anchors.length;
+		if (hash < 0) {
+			hash += time_interval_anchors.length;
+		}
+
+		time_interval_anchors[hash] = time_interval;
+	}
+
+	private long getTimerIntervalAnchor(Object o) {
+		int hash = o.hashCode() % time_interval_anchors.length;
+		if (hash < 0) {
+			hash += time_interval_anchors.length;
+		}
+
+		return time_interval_anchors[hash];
+	}
+
 	CachedRecord takeFromTx(PrimaryKey key, long src, long dest) {
 		// MODIFIED:
 		Timer.getLocalTimer().startComponentTimer("Read from Tx");
@@ -92,26 +115,33 @@ public class TPartCacheMgr implements RemoteRecordReceiver {
 				// Thread.currentThread().setName("Tx." + dest + " waits for pushing of " + key
 				// + " from tx." + src);
 				// wait if the record has not delivered
-				while (!exchange.containsKey(k)) {
+				while ((!exchange.containsKey(k)) || (!time_interval_map.containsKey(k))) {
 					prepareAnchor(k).wait();
 				}
 
 				// Debug: Tracing the waiting key
 				// Thread.currentThread().setName("Tx." + dest);
 				Long time_interval = time_interval_map.remove(k);
-				Timer.getLocalTimer().recordTime("Trans Time Of Remote Read", time_interval);
-				System.out.printf("[%d] A Time_Interval added to timer: Interval = %d\n", (System.nanoTime() / 1000), time_interval);
+				if(time_interval != Long.MIN_VALUE){
+					Timer.getLocalTimer().recordTime("Trans Time Of Remote Read", time_interval);
+					System.out.printf("[%d] A Time_Interval added to timer: Interval = %d\n", (System.currentTimeMillis() * 1000), time_interval);
+				}
+
+				// Timer.getLocalTimer().recordTime("Trans Time Of Remote Read", getTimerIntervalAnchor(k));
+				// System.out.printf("[%d] A Time_Interval added to timer: Interval = %d\n",  (System.nanoTime() / 1000), getTimerIntervalAnchor(k));
 
 				return exchange.remove(k);
 			} catch (InterruptedException e) {
 				throw new RuntimeException();
 			} finally {
 				Timer.getLocalTimer().stopComponentTimer("Read from Tx");
+
+				// Long time_interval = time_interval_map.remove(k);
+				// Timer.getLocalTimer().recordTime("Trans Time Of Remote Read", time_interval);
+				// System.out.printf("[%d] A Time_Interval added to timer: Interval = %d\n", (System.nanoTime() / 1000),
+				// 		time_interval);
 			}
 		}
-		// } finally {
-
-		// }
 	}
 
 	void passToTheNextTx(PrimaryKey key, CachedRecord rec, long src, long dest, boolean isRemote) {
@@ -121,6 +151,8 @@ public class TPartCacheMgr implements RemoteRecordReceiver {
 
 		CachedEntryKey k = new CachedEntryKey(key, src, dest);
 		synchronized (prepareAnchor(k)) {
+			Long dummy = Long.MIN_VALUE;
+			time_interval_map.put(k, dummy);
 			exchange.put(k, rec);
 			prepareAnchor(k).notifyAll();
 		}
@@ -132,18 +164,22 @@ public class TPartCacheMgr implements RemoteRecordReceiver {
 					String.format("The record for %s is null (from Tx.%d to Tx.%d)", key, src, dest));
 
 		// MODIFIED: Record transmit interval
-		long transmit_interval = (System.nanoTime() / 1000) - TimeStamp;
+		long transmit_interval = (System.currentTimeMillis() * 1000) - TimeStamp;
 		// System.out.println("Calc Trans Time: " + transmit_interval);
-		
-		// Timer.getLocalTimer().recordTime("Trans Time Of Remote Read", transmit_interval);
+
+		// Timer.getLocalTimer().recordTime("Trans Time Of Remote Read",
+		// transmit_interval);
 		// System.out.println(Timer.getLocalTimer().toString());
 
 		CachedEntryKey k = new CachedEntryKey(key, src, dest);
 		synchronized (prepareAnchor(k)) {
-			exchange.put(k, rec);
-			// MODIFIED: 
 			time_interval_map.put(k, transmit_interval);
-			System.out.printf("[%d] A Time_Interval added to map: Interval = %d\n", (System.nanoTime()/1000), time_interval_map.get(k));
+			// setTimerIntervalAnchor(k, transmit_interval);
+			// System.out.printf("[%d] A Time_Interval added to map: Interval = %d\n", (System.nanoTime() / 1000), getTimerIntervalAnchor(k));
+			// System.out.printf("[%d] A Time_Interval added to map: Interval = %d\n", (System.nanoTime() / 1000), time_interval_map.get(k));
+			System.out.printf("[%d] A Time_Interval added to map: Interval = %d\n", (System.currentTimeMillis() * 1000), transmit_interval);
+			exchange.put(k, rec);
+			// MODIFIED:
 			prepareAnchor(k).notifyAll();
 		}
 	}
@@ -152,7 +188,8 @@ public class TPartCacheMgr implements RemoteRecordReceiver {
 	public void cacheRemoteRecord(Tuple t) {
 		if (t.doesHaveTimeStamp()) {
 			passToTheNextTx(t.key, t.rec, t.srcTxNum, t.destTxNum, t.timestamp, true);
-			System.out.println("Recv timestamp: " + t.timestamp + " From Txn: " + t.srcTxNum + " To Txn: " + t.destTxNum);
+			System.out
+					.println("Recv timestamp: " + t.timestamp + " From Txn: " + t.srcTxNum + " To Txn: " + t.destTxNum);
 		} else {
 			passToTheNextTx(t.key, t.rec, t.srcTxNum, t.destTxNum, true);
 			System.out.println("Recv Record From Txn: " + t.srcTxNum + " To Txn: " + t.destTxNum);

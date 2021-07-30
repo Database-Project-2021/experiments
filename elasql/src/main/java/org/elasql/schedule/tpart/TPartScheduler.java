@@ -122,6 +122,8 @@ public class TPartScheduler extends Task implements Scheduler {
 	private void processBatch(List<TPartStoredProcedureTask> batchedTasks) {
 		// Insert the batch of tasks
 		inserter.insertBatch(graph, batchedTasks);
+
+		// HERE
 		
 		// Debug
 //		printGraphStatistics();
