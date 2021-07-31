@@ -122,6 +122,12 @@ public class TransactionStatisticsRecorder extends Task {
 			
 			// Generate the output file
 			generateOutputFile(header, rows);
+
+			// MODIFIED: 
+			// Generate dependency graph
+			 
+
+
 			
 		} catch (InterruptedException e) {
 			e.printStackTrace();

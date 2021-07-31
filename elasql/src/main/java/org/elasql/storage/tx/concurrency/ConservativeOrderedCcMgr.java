@@ -15,8 +15,10 @@
  *******************************************************************************/
 package org.elasql.storage.tx.concurrency;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.elasql.sql.PrimaryKey;
@@ -51,6 +53,7 @@ public class ConservativeOrderedCcMgr extends ConcurrencyMgr {
 			
 			bookedObjs.add(key);
 			readObjs.add(key);
+			lockTbl.addSLockRequest(txNum);
 		}
 	}
 
@@ -83,7 +86,13 @@ public class ConservativeOrderedCcMgr extends ConcurrencyMgr {
 			writeObjs.add(key);
 		}
 	}
-	
+	// MODIFIED:
+	public static long checkPreviousWaitingTx(PrimaryKey key) {
+		if (key != null)
+			return lockTbl.checkPreviousWaitingTx(key);
+		return -1;
+	}
+
 	/**
 	 * Book the write lock of the specified object.
 	 * 
