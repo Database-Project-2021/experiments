@@ -12,6 +12,7 @@ import org.elasql.schedule.tpart.graph.TxNode;
 import org.elasql.server.Elasql;
 import org.elasql.sql.PrimaryKey;
 import org.elasql.storage.metadata.PartitionMetaMgr;
+import org.elasql.storage.tx.concurrency.ConservativeOrderedCcMgr;
 
 public class Sinker {
 	
@@ -56,19 +57,35 @@ public class Sinker {
 
 			// Generate reading plans
 			generateReadingPlans(plan, node);
-
+			
 			// Generate writing plans
 			generateWritingPlans(plan, node);
 
 			// Generate write back (to sinks) plans
 			generateWritingBackPlans(plan, node);
 			
+			// MODIFIED:
+			for(PrimaryKey key : node.getTask().getReadSet()){
+				node.getTask().getProcedure().setDependenTxns(ConservativeOrderedCcMgr.checkPreviousWaitingTxns(key, true));
+			}
+
+			for(PrimaryKey key : node.getTask().getWriteSet()){
+				node.getTask().getProcedure().setDependenTxns(ConservativeOrderedCcMgr.checkPreviousWaitingTxns(key, false));
+			}
+
+			for(PrimaryKey key : node.getTask().getReadSet()){
+				ConservativeOrderedCcMgr.getLockTbl().addSLockRequest(key, node.getTxNum());
+			}
+
+			for(PrimaryKey key : node.getTask().getWriteSet()){
+				ConservativeOrderedCcMgr.getLockTbl().addXLockRequest(key, node.getTxNum());
+			}
+			
 			// Decide if the local node should execute this plan
 			if (plan.shouldExecuteHere()) {
 				// Debug
 //				System.out.println(String.format("Tx.%d plan: %s", node.getTxNum(), plan));
-				
-				node.getTask().decideExceutionPlan(plan);
+				node.getTask().decideExceutionPlan(plan);	
 				localTasks.add(node.getTask());
 			}
 		}

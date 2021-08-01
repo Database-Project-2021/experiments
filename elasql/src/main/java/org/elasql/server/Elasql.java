@@ -50,6 +50,7 @@ import org.elasql.storage.metadata.PartitionMetaMgr;
 import org.elasql.storage.metadata.PartitionPlan;
 import org.elasql.util.ElasqlProperties;
 import org.vanilladb.core.server.VanillaDb;
+import org.elasql.procedure.tpart.TransactionGraph;
 
 public class Elasql extends VanillaDb {
 	private static Logger logger = Logger.getLogger(VanillaDb.class.getName());
@@ -110,6 +111,9 @@ public class Elasql extends VanillaDb {
 
 	// connection information
 	private static int myNodeId;
+
+	// MODIFIED: transaction graph
+	private static TransactionGraph txnGraph;
 	
 	/**
 	 * Initializes the system. This method is called during system startup. For
@@ -172,6 +176,9 @@ public class Elasql extends VanillaDb {
 		initDdLogMgr();
 		if (migraComsFactory != null)
 			migraMgr = migraComsFactory.newMigrationMgr();
+		
+		// MODIFIED: initialize tx graph
+		txnGraph = new TransactionGraph();
 	}
 
 	// ================
@@ -348,5 +355,13 @@ public class Elasql extends VanillaDb {
 
 	public static int serverId() {
 		return myNodeId;
+	}
+
+
+	// ===============
+	// MODIFIED: get transaction graph
+	// ===============
+	public static TransactionGraph getTransactionGraph(){
+		return txnGraph;
 	}
 }

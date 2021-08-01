@@ -124,10 +124,9 @@ public class TransactionStatisticsRecorder extends Task {
 			generateOutputFile(header, rows);
 
 			// MODIFIED: 
-			// Generate dependency graph
-			 
-
-
+			// Generate output file of the transaction graph
+			Elasql.getTransactionGraph().generateOutputFile();
+			
 			
 		} catch (InterruptedException e) {
 			e.printStackTrace();
@@ -247,7 +246,7 @@ public class TransactionStatisticsRecorder extends Task {
 		});
 	}
 	
-	private void writeHeader(BufferedWriter writer, List<String> header) throws IOException {
+	public void writeHeader(BufferedWriter writer, List<String> header) throws IOException {
 		StringBuilder sb = new StringBuilder();
 		
 		for (String column : header) {
@@ -260,7 +259,7 @@ public class TransactionStatisticsRecorder extends Task {
 		writer.append(sb.toString());
 	}
 	
-	private void writeRecord(BufferedWriter writer, long[] row, int columnCount) throws IOException {
+	public void writeRecord(BufferedWriter writer, long[] row, int columnCount) throws IOException {
 		StringBuilder sb = new StringBuilder();
 		
 		for (int i = 0; i < columnCount; i++) {

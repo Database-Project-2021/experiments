@@ -42,7 +42,9 @@ public class TPartStoredProcedureTask
 		Timer timer = Timer.getLocalTimer();
 		timer.reset();
 		timer.startExecution();
-
+		// MODIFIED:
+		timer.recordTime("Txn Start TimeStamp", System.nanoTime()/1000);
+         
 		rs = tsp.execute();
 			
 		if (tsp.isMaster()) {
@@ -62,6 +64,10 @@ public class TPartStoredProcedureTask
 		
 		// Stop the timer for the whole execution
 		timer.stopExecution();
+		// MODIFIED:
+		timer.recordTime("Txn End TimeStamp", System.nanoTime()/1000);
+		// MODIFIED:
+		Elasql.getTransactionGraph().addNode(txNum, timer.getExecutionTime(), System.nanoTime()/1000, tsp.getDependenTxns());
 		
 		// Record the timer result
 		TransactionStatisticsRecorder.recordResult(txNum, timer);

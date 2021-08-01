@@ -47,6 +47,8 @@ public abstract class TPartStoredProcedure<H extends StoredProcedureParamHelper>
 	private TPartTxLocalCache cache;
 	private List<CachedEntryKey> cachedEntrySet = new ArrayList<CachedEntryKey>();
 	private boolean isCommitted = false;
+	// MODIFIED:
+	private Set<Long> dependentTxns;
 
 	public TPartStoredProcedure(long txNum, H paramHelper) {
 		super(paramHelper);
@@ -107,6 +109,15 @@ public abstract class TPartStoredProcedure<H extends StoredProcedureParamHelper>
 		ConservativeOrderedCcMgr ccMgr = (ConservativeOrderedCcMgr) tx.concurrencyMgr();
 		
 		ccMgr.requestLocks();
+	}
+
+	// MODIFIED:
+	public void setDependenTxns(Set<Long> dependentTxns){
+		this.dependentTxns = dependentTxns;
+	}
+
+	public Set<Long> getDependenTxns(){
+		return this.dependentTxns;
 	}
 
 	@Override
