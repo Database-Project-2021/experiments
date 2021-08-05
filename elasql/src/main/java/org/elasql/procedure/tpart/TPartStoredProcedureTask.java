@@ -35,6 +35,9 @@ public class TPartStoredProcedureTask
 	@Override
 	public void run() {
 		SpResultSet rs = null;
+
+		if(!Elasql.connectionMgr().startSync)
+			Elasql.connectionMgr().sendServerTimeSync(Elasql.serverId(), System.nanoTime() / 1000, true);
 		
 		Thread.currentThread().setName("Tx." + txNum);
 		

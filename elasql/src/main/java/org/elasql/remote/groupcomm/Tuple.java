@@ -19,6 +19,7 @@ import java.io.Serializable;
 
 import org.elasql.cache.CachedRecord;
 import org.elasql.sql.PrimaryKey;
+import org.elasql.server.Elasql;
 
 public class Tuple implements Serializable {
 	/**
@@ -30,6 +31,7 @@ public class Tuple implements Serializable {
 	public long srcTxNum;
 	public long destTxNum;
 	public long timestamp;
+	public int srcNodeID;
 
 	public Tuple(PrimaryKey key, long srcTxNum, long destTxNum, CachedRecord rec) {
 		this.key = key;
@@ -37,6 +39,7 @@ public class Tuple implements Serializable {
 		this.srcTxNum = srcTxNum;
 		this.destTxNum = destTxNum;
 		this.timestamp = -1;
+		this.srcNodeID = Elasql.serverId();
 	}
 
 	public Tuple(PrimaryKey key, long srcTxNum, long destTxNum, CachedRecord rec, long timestamp) {
@@ -45,6 +48,7 @@ public class Tuple implements Serializable {
 		this.srcTxNum = srcTxNum;
 		this.destTxNum = destTxNum;
 		this.timestamp = timestamp;
+		this.srcNodeID = Elasql.serverId();
 	}
 
 	public Boolean doesHaveTimeStamp(){

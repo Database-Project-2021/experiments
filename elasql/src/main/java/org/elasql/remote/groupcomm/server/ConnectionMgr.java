@@ -18,6 +18,10 @@ package org.elasql.remote.groupcomm.server;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.Queue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.logging.Level;
@@ -29,6 +33,7 @@ import org.elasql.remote.groupcomm.ClientResponse;
 import org.elasql.remote.groupcomm.StoredProcedureCall;
 import org.elasql.remote.groupcomm.Tuple;
 import org.elasql.remote.groupcomm.TupleSet;
+import org.elasql.remote.groupcomm.TimeSync;
 import org.elasql.server.Elasql;
 import org.elasql.server.Elasql.ServiceType;
 import org.vanilladb.comm.server.VanillaCommServer;
@@ -46,6 +51,13 @@ public class ConnectionMgr implements VanillaCommServerListener {
 	private BlockingQueue<List<Serializable>> tomSendQueue = new LinkedBlockingQueue<List<Serializable>>();
 	private boolean areAllServersReady = false;
 
+	//MODIFIED: 
+	private static final int movingLatencyRange = 500; 
+	private Map<Integer,Queue<Long>> movingLatency = new HashMap<Integer,Queue<Long>>();
+	public  Map<Integer,Long> serverLatency = new HashMap<Integer,Long>();
+	private Map<Integer,Long> sentSync = new HashMap<Integer,Long>();
+	public  boolean startSync = false;
+
 	public ConnectionMgr(int id) {
 		sequencerMode = Elasql.serverId() == SEQUENCER_ID;
 		commServer = new VanillaCommServer(id, this);
@@ -56,6 +68,16 @@ public class ConnectionMgr implements VanillaCommServerListener {
 			waitForServersReady();
 			createTomSender();
 		}
+	}
+
+	//MODIFIED: 
+	public void sendServerTimeSync(int serverId, long time, boolean isRequest){
+		if(!startSync)
+			startSync = true;
+		commServer.sendP2pMessage(ProcessType.SERVER, serverId, 
+				new TimeSync(time, Elasql.serverId(), isRequest));
+		if(isRequest)
+			sentSync.put(serverId, time);
 	}
 
 	public void sendClientResponse(int clientId, int rteId, long txNum, SpResultSet rs) {
@@ -120,7 +142,42 @@ public class ConnectionMgr implements VanillaCommServerListener {
 			for (Tuple t : ts.getTupleSet())
 				Elasql.remoteRecReceiver().cacheRemoteRecord(t);
 			
-		} else
+		} else if (message.getClass().equals(TimeSync.class)){
+			//MODIFIED: 
+			TimeSync ts = (TimeSync) message;
+			// Send other server's request back with current timestamp
+			if(ts.isRequest()){
+				sendServerTimeSync(ts.getServerID(), System.nanoTime() / 1000, false);
+				return;
+			} 
+			else{
+				// Calculate latency, then send another request
+				long recvSync = ts.getTime();
+				long time_interval = (System.nanoTime()/1000 - sentSync.get(ts.getServerID()))/2;
+				long latency = (sentSync.get(ts.getServerID() + time_interval) - recvSync);
+
+				System.out.printf("A Server Latancy Value: %d, from Server%d to Server%d\n", latency, Elasql.serverId(), ts.getServerID());
+				if(!movingLatency.containsKey(ts.getServerID())){
+					movingLatency.put(ts.getServerID(), new LinkedList<Long>());
+					movingLatency.get(ts.getServerID()).add(latency);
+					serverLatency.put(ts.getServerID(), latency);
+				}
+				else{
+					movingLatency.get(ts.getServerID()).add(latency);
+					if(movingLatency.get(ts.getServerID()).size() > movingLatencyRange)
+						movingLatency.get(ts.getServerID()).poll();
+					long totalLatency = 0L;
+					for(long lat : movingLatency.get(ts.getServerID()))
+						totalLatency += lat;
+					long avgLatency = totalLatency/movingLatency.get(ts.getServerID()).size();
+					serverLatency.put(ts.getServerID(), avgLatency);
+				}
+
+				sentSync.put(ts.getServerID(), System.nanoTime()/1000);
+				sendServerTimeSync(ts.getServerID(), sentSync.get(ts.getServerID()), true);
+			}
+		}
+		else
 			throw new IllegalArgumentException();
 	}
 

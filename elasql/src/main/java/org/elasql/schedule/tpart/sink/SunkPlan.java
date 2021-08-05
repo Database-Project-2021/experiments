@@ -208,6 +208,16 @@ public class SunkPlan {
 		return false;
 	}
 
+	// MODIFIED: Get the partition ID of the source Txn of specify key.
+	public int getPartIdOfSrcTxn(PrimaryKey key){
+		for(Edge e : this.node.getReadEdges()){
+			if(e.getResourceKey() == key){
+				return e.getTarget().getPartId();
+			}
+		}
+		return -1;
+	}
+
 	// MODIFIED: Return "isRemoteReadPlan"
 	public Boolean isContainRemoteRead(){
 		return isRemoteReadPlan;

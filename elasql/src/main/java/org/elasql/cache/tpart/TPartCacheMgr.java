@@ -15,6 +15,7 @@ import org.elasql.cache.VanillaCoreCrud;
 import org.elasql.remote.groupcomm.Tuple;
 import org.elasql.schedule.tpart.hermes.FusionTable;
 import org.elasql.sql.PrimaryKey;
+import org.elasql.server.Elasql;
 import org.vanilladb.core.storage.tx.Transaction;
 import org.vanilladb.core.util.Timer;
 
@@ -158,13 +159,17 @@ public class TPartCacheMgr implements RemoteRecordReceiver {
 		}
 	}
 
-	void passToTheNextTx(PrimaryKey key, CachedRecord rec, long src, long dest, long TimeStamp, boolean isRemote) {
+	void passToTheNextTx(PrimaryKey key, CachedRecord rec, long src, long dest, long TimeStamp, int srcNode, boolean isRemote) {
 		if (rec == null)
 			throw new NullPointerException(
 					String.format("The record for %s is null (from Tx.%d to Tx.%d)", key, src, dest));
 
 		// MODIFIED: Record transmit interval
-		long transmit_interval = (System.currentTimeMillis() * 1000) - TimeStamp;
+		long transmit_interval;
+		if(Elasql.connectionMgr().serverLatency.get(srcNode) != null)
+			transmit_interval = (System.nanoTime() / 1000) - TimeStamp - Elasql.connectionMgr().serverLatency.get(srcNode);
+		else
+			transmit_interval = (System.nanoTime() / 1000) - TimeStamp;
 		// System.out.println("Calc Trans Time: " + transmit_interval);
 
 		// Timer.getLocalTimer().recordTime("Trans Time Of Remote Read",
@@ -187,7 +192,7 @@ public class TPartCacheMgr implements RemoteRecordReceiver {
 	@Override
 	public void cacheRemoteRecord(Tuple t) {
 		if (t.doesHaveTimeStamp()) {
-			passToTheNextTx(t.key, t.rec, t.srcTxNum, t.destTxNum, t.timestamp, true);
+			passToTheNextTx(t.key, t.rec, t.srcTxNum, t.destTxNum, t.timestamp, t.srcNodeID, true);
 			System.out
 					.println("Recv timestamp: " + t.timestamp + " From Txn: " + t.srcTxNum + " To Txn: " + t.destTxNum);
 		} else {
@@ -199,7 +204,7 @@ public class TPartCacheMgr implements RemoteRecordReceiver {
 	// MODIFIED: Implement inherent method
 	@Override
 	public void cacheRemoteRecordWithTimeStamp(Tuple t) {
-		passToTheNextTx(t.key, t.rec, t.srcTxNum, t.destTxNum, t.timestamp, true);
+		passToTheNextTx(t.key, t.rec, t.srcTxNum, t.destTxNum, t.timestamp, t.srcNodeID, true);
 	}
 
 	CachedRecord readFromSink(PrimaryKey key, Transaction tx) {
