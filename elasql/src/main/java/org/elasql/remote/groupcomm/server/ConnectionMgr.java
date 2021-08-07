@@ -68,10 +68,12 @@ public class ConnectionMgr implements VanillaCommServerListener {
 			waitForServersReady();
 			createTomSender();
 		}
+		createTimeSyncSender();
 	}
 
 	// MODIFIED:
 	public void sendServerTimeSync(int serverId, long time, boolean isRequest) {
+		System.out.printf("TimeSync Sent. From %d to %d \n", Elasql.serverId(), serverId);
 		if (!startSync)
 			startSync = true;
 		commServer.sendP2pMessage(ProcessType.SERVER, serverId, new TimeSync(time, Elasql.serverId(), isRequest));
@@ -143,9 +145,10 @@ public class ConnectionMgr implements VanillaCommServerListener {
 		} else if (message.getClass().equals(TimeSync.class)) {
 			// MODIFIED:
 			TimeSync ts = (TimeSync) message;
+			System.out.printf("TimeSync Recv. From %d to %d \n", ts.getServerID(), Elasql.serverId());
 			// Send other server's request back with current timestamp
 			if (ts.isRequest()) {
-				sendServerTimeSync(ts.getServerID(), System.nanoTime() / 1000, false);
+				//sendServerTimeSync(ts.getServerID(), System.nanoTime() / 1000, false);
 				return;
 			} else {
 				// Calculate latency, then send another request
@@ -171,7 +174,7 @@ public class ConnectionMgr implements VanillaCommServerListener {
 				}
 
 				sentSync.put(ts.getServerID(), System.nanoTime() / 1000);
-				sendServerTimeSync(ts.getServerID(), sentSync.get(ts.getServerID()), true);
+				//sendServerTimeSync(ts.getServerID(), sentSync.get(ts.getServerID()), true);
 			}
 		} else
 			throw new IllegalArgumentException();
@@ -197,6 +200,25 @@ public class ConnectionMgr implements VanillaCommServerListener {
 					try {
 						List<Serializable> messages = tomSendQueue.take();
 						commServer.sendTotalOrderMessages(messages);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+				}
+
+			}
+		}).start();
+		;
+	}
+
+	private void createTimeSyncSender() {
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				while (true) {
+					try {
+						Thread.sleep(5);
+						//List<Serializable> messages = tomSendQueue.take();
+						commServer.sendP2pMessage(ProcessType.SERVER, 1, new TimeSync(System.nanoTime() / 1000, Elasql.serverId(), true));
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}

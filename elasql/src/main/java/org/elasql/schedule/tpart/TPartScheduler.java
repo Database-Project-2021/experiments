@@ -80,15 +80,7 @@ public class TPartScheduler extends Task implements Scheduler {
 
 	public void run() {
 		List<TPartStoredProcedureTask> batchedTasks = new LinkedList<TPartStoredProcedureTask>();
-		// MODIFIED:
-		if (Elasql.connectionMgr() != null) {
-			if (!Elasql.connectionMgr().startSync) {
-				for (int i = 0; i < VanillaCommServer.getServerCount() - 1; i++) {
-					if (i != Elasql.serverId())
-						Elasql.connectionMgr().sendServerTimeSync(i, System.nanoTime() / 1000, true);
-				}
-			}
-		}
+
 		while (true) {
 			try {
 				// blocked if the queue is empty

@@ -68,35 +68,35 @@ public class Elasql extends VanillaDb {
 
 		static ServiceType fromInteger(int index) {
 			switch (index) {
-			case 0:
-				return NAIVE;
-			case 1:
-				return CALVIN;
-			case 2:
-				return TPART;
-			case 3:
-				return HERMES;
-			case 4:
-				return G_STORE;
-			case 5:
-				return LEAP;
-			default:
-				throw new RuntimeException("Unsupport service type");
+				case 0:
+					return NAIVE;
+				case 1:
+					return CALVIN;
+				case 2:
+					return TPART;
+				case 3:
+					return HERMES;
+				case 4:
+					return G_STORE;
+				case 5:
+					return LEAP;
+				default:
+					throw new RuntimeException("Unsupport service type");
 			}
 		}
 	}
-	
+
 	public static final ServiceType SERVICE_TYPE;
 	public static final boolean ENABLE_STAND_ALONE_SEQUENCER;
-	
+
 	public static final long SYSTEM_INIT_TIME_MS = System.currentTimeMillis();
-	
+
 	static {
-		int type = ElasqlProperties.getLoader().getPropertyAsInteger(
-				Elasql.class.getName() + ".SERVICE_TYPE", ServiceType.NAIVE.ordinal());
+		int type = ElasqlProperties.getLoader().getPropertyAsInteger(Elasql.class.getName() + ".SERVICE_TYPE",
+				ServiceType.NAIVE.ordinal());
 		SERVICE_TYPE = ServiceType.fromInteger(type);
-		ENABLE_STAND_ALONE_SEQUENCER = ElasqlProperties.getLoader().getPropertyAsBoolean(
-				Elasql.class.getName() + ".ENABLE_STAND_ALONE_SEQUENCER", false);
+		ENABLE_STAND_ALONE_SEQUENCER = ElasqlProperties.getLoader()
+				.getPropertyAsBoolean(Elasql.class.getName() + ".ENABLE_STAND_ALONE_SEQUENCER", false);
 	}
 
 	// DD modules
@@ -106,7 +106,7 @@ public class Elasql extends VanillaDb {
 	private static Scheduler scheduler;
 	private static DdLogMgr ddLogMgr;
 	private static MigrationMgr migraMgr;
-	
+
 	// Only for the sequencer
 	private static MigrationSystemController migraSysControl;
 
@@ -115,24 +115,20 @@ public class Elasql extends VanillaDb {
 
 	// MODIFIED: transaction graph
 	private static TransactionGraph txnGraph;
-	
+
 	/**
 	 * Initializes the system. This method is called during system startup. For
 	 * sequencers, it can set {@code initVanillaDb} as {@code false} to avoid
 	 * initializing underlying databases.
 	 * 
-	 * @param dirName
-	 *            the name of the database directory
-	 * @param id
-	 *            the id of the server
-	 * @param factory
-	 *            the stored procedure factory
+	 * @param dirName the name of the database directory
+	 * @param id      the id of the server
+	 * @param factory the stored procedure factory
 	 */
 	public static void init(String dirName, int id, DdStoredProcedureFactory<?> factory) {
 		PartitionPlan partitionPlan = null;
 		Class<?> planCls = ElasqlProperties.getLoader().getPropertyAsClass(
-				Elasql.class.getName() + ".DEFAULT_PARTITION_PLAN", HashPartitionPlan.class,
-				PartitionMetaMgr.class);
+				Elasql.class.getName() + ".DEFAULT_PARTITION_PLAN", HashPartitionPlan.class, PartitionMetaMgr.class);
 
 		try {
 			partitionPlan = (PartitionPlan) planCls.newInstance();
@@ -141,12 +137,12 @@ public class Elasql extends VanillaDb {
 				logger.warning("error reading the class name for partition manager");
 			throw new RuntimeException();
 		}
-		
+
 		init(dirName, id, factory, partitionPlan, null);
 	}
-	
-	public static void init(String dirName, int id, DdStoredProcedureFactory<?> factory,
-			PartitionPlan partitionPlan, MigrationComponentFactory migraComsFactory) {
+
+	public static void init(String dirName, int id, DdStoredProcedureFactory<?> factory, PartitionPlan partitionPlan,
+			MigrationComponentFactory migraComsFactory) {
 		myNodeId = id;
 
 		if (logger.isLoggable(Level.INFO))
@@ -170,16 +166,28 @@ public class Elasql extends VanillaDb {
 		VanillaDb.init(dirName);
 
 		// initialize DD modules
+		initConnectionMgr(myNodeId);
 		initCacheMgr();
 		initPartitionMetaMgr(partitionPlan);
 		initScheduler(factory, migraComsFactory);
-		initConnectionMgr(myNodeId);
 		initDdLogMgr();
 		if (migraComsFactory != null)
 			migraMgr = migraComsFactory.newMigrationMgr();
-		
+
 		// MODIFIED: initialize tx graph
 		txnGraph = new TransactionGraph();
+		// MODIFIED:
+		if (connMgr != null) {
+			if (!connMgr.startSync) {
+				System.out.println("Start Sync");
+				// for (int i = 0; i < VanillaCommServer.getServerCount() - 1; i++) {
+				// 	if (i != serverId())
+				// 		connMgr.sendServerTimeSync(i, System.nanoTime() / 1000, true);
+				// }
+			}
+		} else {
+			System.out.printf("A ConnectionMgr request failed, ServerID: %d \n", serverId());
+		}
 	}
 
 	// ================
@@ -188,49 +196,49 @@ public class Elasql extends VanillaDb {
 
 	public static void initCacheMgr() {
 		switch (SERVICE_TYPE) {
-		case NAIVE:
-			remoteRecReceiver = new NaiveCacheMgr();
-			break;
-		case CALVIN:
-			remoteRecReceiver = new CalvinPostOffice();
-			break;
-		case TPART:
-		case HERMES:
-		case G_STORE:
-		case LEAP:
-			remoteRecReceiver = new TPartCacheMgr();
-			break;
+			case NAIVE:
+				remoteRecReceiver = new NaiveCacheMgr();
+				break;
+			case CALVIN:
+				remoteRecReceiver = new CalvinPostOffice();
+				break;
+			case TPART:
+			case HERMES:
+			case G_STORE:
+			case LEAP:
+				remoteRecReceiver = new TPartCacheMgr();
+				break;
 
-		default:
-			throw new UnsupportedOperationException();
+			default:
+				throw new UnsupportedOperationException();
 		}
 	}
 
 	public static void initScheduler(DdStoredProcedureFactory<?> factory, MigrationComponentFactory migraComsFactory) {
 		switch (SERVICE_TYPE) {
-		case NAIVE:
-			if (!NaiveStoredProcedureFactory.class.isAssignableFrom(factory.getClass()))
-				throw new IllegalArgumentException("The given factory is not a NaiveStoredProcedureFactory");
-			scheduler = initNaiveScheduler((NaiveStoredProcedureFactory) factory);
-			break;
-		case CALVIN:
-			if (!CalvinStoredProcedureFactory.class.isAssignableFrom(factory.getClass()))
-				throw new IllegalArgumentException("The given factory is not a CalvinStoredProcedureFactory");
-			CalvinStoredProcedureFactory calvinFactory = (CalvinStoredProcedureFactory) factory;
-			if (migraComsFactory != null)
-				calvinFactory = migraComsFactory.newMigrationSpFactory(calvinFactory);
-			scheduler = initCalvinScheduler(calvinFactory);
-			break;
-		case TPART:
-		case HERMES:
-		case G_STORE:
-		case LEAP:
-			if (!TPartStoredProcedureFactory.class.isAssignableFrom(factory.getClass()))
-				throw new IllegalArgumentException("The given factory is not a TPartStoredProcedureFactory");
-			scheduler = initTPartScheduler((TPartStoredProcedureFactory) factory);
-			break;
-		default:
-			throw new UnsupportedOperationException();
+			case NAIVE:
+				if (!NaiveStoredProcedureFactory.class.isAssignableFrom(factory.getClass()))
+					throw new IllegalArgumentException("The given factory is not a NaiveStoredProcedureFactory");
+				scheduler = initNaiveScheduler((NaiveStoredProcedureFactory) factory);
+				break;
+			case CALVIN:
+				if (!CalvinStoredProcedureFactory.class.isAssignableFrom(factory.getClass()))
+					throw new IllegalArgumentException("The given factory is not a CalvinStoredProcedureFactory");
+				CalvinStoredProcedureFactory calvinFactory = (CalvinStoredProcedureFactory) factory;
+				if (migraComsFactory != null)
+					calvinFactory = migraComsFactory.newMigrationSpFactory(calvinFactory);
+				scheduler = initCalvinScheduler(calvinFactory);
+				break;
+			case TPART:
+			case HERMES:
+			case G_STORE:
+			case LEAP:
+				if (!TPartStoredProcedureFactory.class.isAssignableFrom(factory.getClass()))
+					throw new IllegalArgumentException("The given factory is not a TPartStoredProcedureFactory");
+				scheduler = initTPartScheduler((TPartStoredProcedureFactory) factory);
+				break;
+			default:
+				throw new UnsupportedOperationException();
 		}
 	}
 
@@ -252,47 +260,46 @@ public class Elasql extends VanillaDb {
 		Sinker sinker;
 		FusionTable table;
 		boolean isBatching = true;
-		
+
 		switch (SERVICE_TYPE) {
-		case TPART:
-			graph = new TGraph();
-			inserter = new CostAwareNodeInserter();
-			sinker = new Sinker();
-			isBatching = true;
-			break;
-		case HERMES:
-			table = new FusionTable();
-			graph = new FusionTGraph(table);
-			inserter = new HermesNodeInserter();
-			sinker = new FusionSinker(table);
-			isBatching = true;
-			break;
-		case G_STORE:
-			graph = new TGraph();
-			inserter = new LocalFirstNodeInserter();
-			sinker = new Sinker();
-			isBatching = false;
-			break;
-		case LEAP:
-			table = new FusionTable();
-			graph = new FusionTGraph(table);
-			inserter = new LocalFirstNodeInserter();
-			sinker = new FusionSinker(table);
-			isBatching = false;
-			break;
-		default:
-			throw new IllegalArgumentException("Not supported");
+			case TPART:
+				graph = new TGraph();
+				inserter = new CostAwareNodeInserter();
+				sinker = new Sinker();
+				isBatching = true;
+				break;
+			case HERMES:
+				table = new FusionTable();
+				graph = new FusionTGraph(table);
+				inserter = new HermesNodeInserter();
+				sinker = new FusionSinker(table);
+				isBatching = true;
+				break;
+			case G_STORE:
+				graph = new TGraph();
+				inserter = new LocalFirstNodeInserter();
+				sinker = new Sinker();
+				isBatching = false;
+				break;
+			case LEAP:
+				table = new FusionTable();
+				graph = new FusionTGraph(table);
+				inserter = new LocalFirstNodeInserter();
+				sinker = new FusionSinker(table);
+				isBatching = false;
+				break;
+			default:
+				throw new IllegalArgumentException("Not supported");
 		}
-		
+
 		// TODO: Uncomment this when the migration module is migrated
-//		factory = new MigrationStoredProcFactory(factory);
-		TPartScheduler scheduler = new TPartScheduler(factory,  inserter,
-				sinker, graph, isBatching);
-		
+		// factory = new MigrationStoredProcFactory(factory);
+		TPartScheduler scheduler = new TPartScheduler(factory, inserter, sinker, graph, isBatching);
+
 		taskMgr().runTask(scheduler);
 		return scheduler;
 	}
-	
+
 	public static void initPartitionMetaMgr(PartitionPlan plan) {
 		try {
 			// Add a warper partition-meta-mgr for handling notifications
@@ -307,7 +314,7 @@ public class Elasql extends VanillaDb {
 	}
 
 	public static void initConnectionMgr(int id) {
-		connMgr = new ConnectionMgr(id);		
+		connMgr = new ConnectionMgr(id);
 	}
 
 	public static void initDdLogMgr() {
@@ -337,15 +344,15 @@ public class Elasql extends VanillaDb {
 	public static DdLogMgr DdLogMgr() {
 		return ddLogMgr;
 	}
-	
+
 	public static MigrationMgr migrationMgr() {
 		return migraMgr;
 	}
-	
+
 	public static MigrationSystemController migraSysControl() {
 		return migraSysControl;
 	}
-	
+
 	public static boolean isStandAloneSequencer() {
 		return ENABLE_STAND_ALONE_SEQUENCER && (myNodeId == ConnectionMgr.SEQUENCER_ID);
 	}
@@ -358,11 +365,10 @@ public class Elasql extends VanillaDb {
 		return myNodeId;
 	}
 
-
 	// ===============
 	// MODIFIED: get transaction graph
 	// ===============
-	public static TransactionGraph getTransactionGraph(){
+	public static TransactionGraph getTransactionGraph() {
 		return txnGraph;
 	}
 }
