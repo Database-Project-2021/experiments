@@ -50,6 +50,7 @@ import org.elasql.storage.metadata.PartitionMetaMgr;
 import org.elasql.storage.metadata.PartitionPlan;
 import org.elasql.util.ElasqlProperties;
 import org.vanilladb.core.server.VanillaDb;
+import org.vanilladb.comm.server.VanillaCommServer;
 import org.elasql.procedure.tpart.TransactionGraph;
 
 public class Elasql extends VanillaDb {
@@ -306,7 +307,7 @@ public class Elasql extends VanillaDb {
 	}
 
 	public static void initConnectionMgr(int id) {
-		connMgr = new ConnectionMgr(id);
+		connMgr = new ConnectionMgr(id);		
 	}
 
 	public static void initDdLogMgr() {
