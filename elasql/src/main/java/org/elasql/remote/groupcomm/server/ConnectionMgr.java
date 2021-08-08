@@ -34,6 +34,7 @@ import org.elasql.remote.groupcomm.StoredProcedureCall;
 import org.elasql.remote.groupcomm.Tuple;
 import org.elasql.remote.groupcomm.TupleSet;
 import org.elasql.remote.groupcomm.TimeSync;
+import org.elasql.remote.groupcomm.SyncRequest;
 import org.elasql.server.Elasql;
 import org.elasql.server.Elasql.ServiceType;
 import org.vanilladb.comm.server.VanillaCommServer;
@@ -56,6 +57,7 @@ public class ConnectionMgr implements VanillaCommServerListener {
 	private Map<Integer, Queue<Long>> movingLatency = new HashMap<Integer, Queue<Long>>();
 	public Map<Integer, Long> serverLatency = new HashMap<Integer, Long>();
 	private Map<Integer, Long> sentSync = new HashMap<Integer, Long>();
+	private BlockingQueue<SyncRequest> timeSyncQueue = new LinkedBlockingQueue<SyncRequest>();
 	public boolean startSync = false;
 
 	public ConnectionMgr(int id) {
@@ -142,39 +144,54 @@ public class ConnectionMgr implements VanillaCommServerListener {
 			for (Tuple t : ts.getTupleSet())
 				Elasql.remoteRecReceiver().cacheRemoteRecord(t);
 
-		} else if (message.getClass().equals(TimeSync.class)) {
+		} else if (message.getClass().equals(SyncRequest.class)) {
 			// MODIFIED:
-			TimeSync ts = (TimeSync) message;
-			System.out.printf("TimeSync Recv. From %d to %d \n", ts.getServerID(), Elasql.serverId());
+			SyncRequest sr = (SyncRequest) message;
+			System.out.printf("TimeSync Recv. From %d to %d \n", sr.getServerID(), Elasql.serverId());
 			// Send other server's request back with current timestamp
-			if (ts.isRequest()) {
-				//sendServerTimeSync(ts.getServerID(), System.nanoTime() / 1000, false);
+			if (sr.isRequest()) {
+				// sendServerTimeSync(ts.getServerID(), System.nanoTime() / 1000, false);
+				try {
+					SyncRequest temp = new SyncRequest(sr.getTimeSync().getServerID(),
+							new TimeSync(System.nanoTime() / 1000, Elasql.serverId(), false));
+					timeSyncQueue.put(temp);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
 				return;
 			} else {
 				// Calculate latency, then send another request
-				long recvSync = ts.getTime();
-				long time_interval = (System.nanoTime() / 1000 - sentSync.get(ts.getServerID())) / 2;
-				long latency = sentSync.get(ts.getServerID()) + time_interval - recvSync;
-
-				System.out.printf("A Server Latancy Value: %d, from Server%d to Server%d\n", latency, Elasql.serverId(),
-						ts.getServerID());
-				if (!movingLatency.containsKey(ts.getServerID())) {
-					movingLatency.put(ts.getServerID(), new LinkedList<Long>());
-					movingLatency.get(ts.getServerID()).add(latency);
-					serverLatency.put(ts.getServerID(), latency);
+				long recvSync = sr.getTimeSync().getTime();
+				long time_interval = (System.nanoTime() / 1000 - sentSync.get(sr.getTimeSync().getServerID())) / 2;
+				long latency = sentSync.get(sr.getTimeSync().getServerID()) + time_interval - recvSync;
+				int destID = sr.getTimeSync().getServerID();
+				System.out.printf("A time_interval Value: %d, from Server%d to Server%d\n", time_interval, Elasql.serverId(), destID);
+				System.out.printf("A Server Latency Value: %d, from Server%d to Server%d\n", latency, Elasql.serverId(), destID);
+				if (!movingLatency.containsKey(sr.getTimeSync().getServerID())) {
+					movingLatency.put(sr.getTimeSync().getServerID(), new LinkedList<Long>());
+					movingLatency.get(sr.getTimeSync().getServerID()).add(latency);
+					serverLatency.put(sr.getTimeSync().getServerID(), latency);
 				} else {
-					movingLatency.get(ts.getServerID()).add(latency);
-					if (movingLatency.get(ts.getServerID()).size() > movingLatencyRange)
-						movingLatency.get(ts.getServerID()).poll();
+					movingLatency.get(sr.getTimeSync().getServerID()).add(latency);
+					if (movingLatency.get(sr.getTimeSync().getServerID()).size() > movingLatencyRange)
+						movingLatency.get(sr.getTimeSync().getServerID()).poll();
 					long totalLatency = 0L;
-					for (long lat : movingLatency.get(ts.getServerID()))
+					for (long lat : movingLatency.get(sr.getTimeSync().getServerID()))
 						totalLatency += lat;
-					long avgLatency = totalLatency / movingLatency.get(ts.getServerID()).size();
-					serverLatency.put(ts.getServerID(), avgLatency);
+					long avgLatency = totalLatency / movingLatency.get(sr.getTimeSync().getServerID()).size();
+					serverLatency.put(sr.getTimeSync().getServerID(), avgLatency);
 				}
 
-				sentSync.put(ts.getServerID(), System.nanoTime() / 1000);
-				//sendServerTimeSync(ts.getServerID(), sentSync.get(ts.getServerID()), true);
+				sentSync.put(sr.getTimeSync().getServerID(), System.nanoTime() / 1000);
+				// sendServerTimeSync(ts.getServerID(), sentSync.get(ts.getServerID()), true);
+				try {
+					SyncRequest temp = new SyncRequest(sr.getTimeSync().getServerID(),
+							new TimeSync(System.nanoTime() / 1000, Elasql.serverId(), true));
+					timeSyncQueue.put(temp);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+
 			}
 		} else
 			throw new IllegalArgumentException();
@@ -211,14 +228,24 @@ public class ConnectionMgr implements VanillaCommServerListener {
 	}
 
 	private void createTimeSyncSender() {
+		try {
+			for (int i = 0; i < VanillaCommServer.getServerCount() - 1; i++) {
+				SyncRequest temp = new SyncRequest(i, new TimeSync(System.nanoTime() / 1000, Elasql.serverId(), true));
+				timeSyncQueue.put(temp);
+				sentSync.put(i, System.nanoTime() / 1000);
+			}
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 		new Thread(new Runnable() {
 			@Override
 			public void run() {
 				while (true) {
 					try {
 						Thread.sleep(5);
-						//List<Serializable> messages = tomSendQueue.take();
-						commServer.sendP2pMessage(ProcessType.SERVER, 1, new TimeSync(System.nanoTime() / 1000, Elasql.serverId(), true));
+						SyncRequest message = timeSyncQueue.take();
+						commServer.sendP2pMessage(ProcessType.SERVER, message.getServerID(), message);
+						System.out.printf("TimeSync Sent. From %d to %d \n", Elasql.serverId(), message.getServerID());
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
