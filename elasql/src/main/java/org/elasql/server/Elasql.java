@@ -50,7 +50,6 @@ import org.elasql.storage.metadata.PartitionMetaMgr;
 import org.elasql.storage.metadata.PartitionPlan;
 import org.elasql.util.ElasqlProperties;
 import org.vanilladb.core.server.VanillaDb;
-import org.vanilladb.comm.server.VanillaCommServer;
 import org.elasql.procedure.tpart.TransactionGraph;
 
 public class Elasql extends VanillaDb {
@@ -179,14 +178,14 @@ public class Elasql extends VanillaDb {
 		// MODIFIED:
 		if (connMgr != null) {
 			if (!connMgr.startSync) {
-				System.out.println("Start Sync");
+				// System.out.println("Start Sync");
 				// for (int i = 0; i < VanillaCommServer.getServerCount() - 1; i++) {
 				// 	if (i != serverId())
 				// 		connMgr.sendServerTimeSync(i, System.nanoTime() / 1000, true);
 				// }
 			}
 		} else {
-			System.out.printf("A ConnectionMgr request failed, ServerID: %d \n", serverId());
+			// System.out.printf("A ConnectionMgr request failed, ServerID: %d \n", serverId());
 		}
 	}
 

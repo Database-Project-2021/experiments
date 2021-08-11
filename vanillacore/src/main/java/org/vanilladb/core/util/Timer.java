@@ -114,7 +114,7 @@ public class Timer {
 			timer.setTimer(time);
 			subTimers.put(component, timer);
 			componenents.add(component);
-			System.out.printf("A Transmit Time has been added, Time: %d\n", time);
+			// System.out.printf("A Transmit Time has been added, Time: %d\n", time);
 		}
 		
 		//timer.startTimer();

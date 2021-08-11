@@ -135,6 +135,7 @@ public class TPartScheduler extends Task implements Scheduler {
 		// Sink the graph
 		if (graph.getTxNodes().size() != 0) {
 			Iterator<TPartStoredProcedureTask> plansTter = sinker.sink(graph);
+			// MODIFIED: Set up TransactionGraph timer.
 			Elasql.getTransactionGraph().setStartTime(System.nanoTime() / 1000);
 			dispatchToTaskMgr(plansTter);
 		}

@@ -10,7 +10,7 @@ import org.elasql.sql.PrimaryKey;
 import org.elasql.util.TransactionStatisticsRecorder;
 import org.vanilladb.core.remote.storedprocedure.SpResultSet;
 import org.vanilladb.core.util.Timer;
-import org.vanilladb.comm.server.VanillaCommServer;
+
 
 public class TPartStoredProcedureTask extends StoredProcedureTask<TPartStoredProcedure<?>> {
 

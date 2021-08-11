@@ -123,7 +123,7 @@ public abstract class TPartStoredProcedure<H extends StoredProcedureParamHelper>
 	@Override
 	public SpResultSet execute() {
 		try {
-			// 
+			// MODIFIED: 
 			if(tx.isReadOnly())
 				Timer.getLocalTimer().startComponentTimer("Average Time Of Read-Only Txn");
 			else

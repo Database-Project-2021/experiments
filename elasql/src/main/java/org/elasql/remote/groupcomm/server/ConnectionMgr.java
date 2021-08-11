@@ -73,16 +73,6 @@ public class ConnectionMgr implements VanillaCommServerListener {
 		createTimeSyncSender();
 	}
 
-	// MODIFIED:
-	public void sendServerTimeSync(int serverId, long time, boolean isRequest) {
-		System.out.printf("TimeSync Sent. From %d to %d \n", Elasql.serverId(), serverId);
-		if (!startSync)
-			startSync = true;
-		commServer.sendP2pMessage(ProcessType.SERVER, serverId, new TimeSync(time, Elasql.serverId(), isRequest));
-		if (isRequest)
-			sentSync.put(serverId, time);
-	}
-
 	public void sendClientResponse(int clientId, int rteId, long txNum, SpResultSet rs) {
 		commServer.sendP2pMessage(ProcessType.CLIENT, clientId, new ClientResponse(clientId, rteId, txNum, rs));
 	}
@@ -147,7 +137,7 @@ public class ConnectionMgr implements VanillaCommServerListener {
 		} else if (message.getClass().equals(SyncRequest.class)) {
 			// MODIFIED:
 			SyncRequest sr = (SyncRequest) message;
-			System.out.printf("TimeSync Recv. From %d to %d \n", sr.getServerID(), Elasql.serverId());
+			// System.out.printf("TimeSync Recv. From %d to %d \n", sr.getServerID(), Elasql.serverId());
 			// Send other server's request back with current timestamp
 			if (sr.isRequest()) {
 				// sendServerTimeSync(ts.getServerID(), System.nanoTime() / 1000, false);
@@ -160,13 +150,13 @@ public class ConnectionMgr implements VanillaCommServerListener {
 				}
 				return;
 			} else {
-				// Calculate latency, then send another request
+				// MODIFIED:
+				// Calculate latency, then push another request into timeSyncQueue
 				long recvSync = sr.getTimeSync().getTime();
 				long time_interval = (System.nanoTime() / 1000 - sentSync.get(sr.getTimeSync().getServerID())) / 2;
 				long latency = sentSync.get(sr.getTimeSync().getServerID()) + time_interval - recvSync;
-				int destID = sr.getTimeSync().getServerID();
-				System.out.printf("A time_interval Value: %d, from Server%d to Server%d\n", time_interval, Elasql.serverId(), destID);
-				System.out.printf("A Server Latency Value: %d, from Server%d to Server%d\n", latency, Elasql.serverId(), destID);
+				// System.out.printf("A time_interval Value: %d, from Server%d to Server%d\n", time_interval, Elasql.serverId(), destID);
+				// System.out.printf("A Server Latency Value: %d, from Server%d to Server%d\n", latency, Elasql.serverId(), destID);
 				if (!movingLatency.containsKey(sr.getTimeSync().getServerID())) {
 					movingLatency.put(sr.getTimeSync().getServerID(), new LinkedList<Long>());
 					movingLatency.get(sr.getTimeSync().getServerID()).add(latency);
@@ -227,6 +217,12 @@ public class ConnectionMgr implements VanillaCommServerListener {
 		;
 	}
 
+
+	/**
+		Called when ConnectionMgr is created, 
+		this function add request to every other node into timeSyncQueue, 
+		then create thread to keep sending request in the timeSyncQueue.
+	 */
 	private void createTimeSyncSender() {
 		try {
 			for (int i = 0; i < VanillaCommServer.getServerCount() - 1; i++) {
@@ -245,7 +241,7 @@ public class ConnectionMgr implements VanillaCommServerListener {
 						Thread.sleep(5);
 						SyncRequest message = timeSyncQueue.take();
 						commServer.sendP2pMessage(ProcessType.SERVER, message.getServerID(), message);
-						System.out.printf("TimeSync Sent. From %d to %d \n", Elasql.serverId(), message.getServerID());
+						// System.out.printf("TimeSync Sent. From %d to %d \n", Elasql.serverId(), message.getServerID());
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}

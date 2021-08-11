@@ -44,10 +44,4 @@ public class NaiveCacheMgr implements RemoteRecordReceiver {
 	public void cacheRemoteRecord(Tuple t) {
 		// Do nothing
 	}
-
-	// MODIFIED: Implement inherent method
-	@Override
-	public void cacheRemoteRecordWithTimeStamp(Tuple t) {
-		// Do nothing
-	}
 }

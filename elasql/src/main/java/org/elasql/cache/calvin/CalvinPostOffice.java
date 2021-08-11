@@ -62,12 +62,6 @@ public class CalvinPostOffice implements RemoteRecordReceiver {
 		dispatchers[id].cacheRemoteRecord(t.key, t.rec);
 	}
 
-	// MODIFIED: Implement inherent method
-	@Override
-	public void cacheRemoteRecordWithTimeStamp(Tuple t){
-		// Do nothing
-	}
-
 	void registerCacheMgr(long txNum, CalvinCacheMgr cacheMgr) {
 		int id = (int) (txNum % NUM_DISPATCHERS);
 		dispatchers[id].registerCacheMgr(txNum, cacheMgr);

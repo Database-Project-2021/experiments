@@ -18,6 +18,10 @@ public class Edge {
 	}
 
 	// MODIFIED: Check whether the edge is remote read
+	/**
+	 * Return a boolean indicating whether the edge is remoted or not
+	 * @return
+	 */
 	public Boolean isRemoteRead(){
 		return target.getPartId() == Elasql.serverId();
 	}

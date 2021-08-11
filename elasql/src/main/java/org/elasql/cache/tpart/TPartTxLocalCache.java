@@ -9,7 +9,6 @@ import org.elasql.cache.CachedRecord;
 import org.elasql.schedule.tpart.sink.SunkPlan;
 import org.elasql.server.Elasql;
 import org.elasql.sql.PrimaryKey;
-import org.elasql.util.TransactionStatisticsRecorder;
 import org.vanilladb.core.sql.Constant;
 import org.vanilladb.core.storage.tx.Transaction;
 import org.vanilladb.core.util.Timer;

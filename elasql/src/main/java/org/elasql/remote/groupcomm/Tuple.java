@@ -33,6 +33,13 @@ public class Tuple implements Serializable {
 	public long timestamp;
 	public int srcNodeID;
 
+	/**
+	 * Constructor of tuple
+	 * @param key: The record key
+	 * @param srcTxNum: The source transaction ID of remote read
+	 * @param destTxNum: The destination transaction ID of remote read
+	 * @param rec: The required record instance.
+	 */
 	public Tuple(PrimaryKey key, long srcTxNum, long destTxNum, CachedRecord rec) {
 		this.key = key;
 		this.rec = rec;
@@ -42,6 +49,14 @@ public class Tuple implements Serializable {
 		this.srcNodeID = Elasql.serverId();
 	}
 
+	/**
+	 * The modified version of original Tuple constructor, added Timestamp for lock time recording.
+	 * @param key: The record key
+	 * @param srcTxNum: The source transaction ID of remote read
+	 * @param destTxNum: The destination transaction ID of remote read
+	 * @param rec: The required record instance.
+	 * @param timestamp: The time stamp of the beginning of sending the message.
+	 */
 	public Tuple(PrimaryKey key, long srcTxNum, long destTxNum, CachedRecord rec, long timestamp) {
 		this.key = key;
 		this.rec = rec;
@@ -50,7 +65,10 @@ public class Tuple implements Serializable {
 		this.timestamp = timestamp;
 		this.srcNodeID = Elasql.serverId();
 	}
-
+	/**
+	 * Return a boolean indicating whether the tuple contain a timestamp
+	 * @return
+	 */
 	public Boolean doesHaveTimeStamp(){
 		return timestamp != -1;
 	}

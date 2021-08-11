@@ -20,8 +20,5 @@ import org.elasql.remote.groupcomm.Tuple;
 public interface RemoteRecordReceiver {
 	
 	void cacheRemoteRecord(Tuple t);
-	void cacheRemoteRecordWithTimeStamp(Tuple t);
-
-	
 }
 

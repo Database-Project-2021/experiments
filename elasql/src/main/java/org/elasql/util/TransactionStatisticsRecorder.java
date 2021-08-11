@@ -63,7 +63,6 @@ public class TransactionStatisticsRecorder extends Task {
 	private static BlockingQueue<TransactionStatistics> queue
 		= new ArrayBlockingQueue<TransactionStatistics>(100000);
 
-	private long[] avgData;
 	
 	public static void startRecording() {
 		if (!isRecording.getAndSet(true)) {
@@ -139,14 +138,6 @@ public class TransactionStatisticsRecorder extends Task {
 		header.add(FIRST_STATS_COLUMN);
 		return header;
 	}
-
-	private void addToAvg(List<long[]> rows){
-		for(long[] row : rows){
-			for(int i=0; i<row.length; i++){
-				avgData[i] = avgData[i] + row[i];
-			}
-		}
-	}
 	
 	private Map<String, Integer> createHeaderToIndexMapping(List<String> header) {
 		Map<String, Integer> columnToIndex = new HashMap<String, Integer>();
@@ -174,26 +165,7 @@ public class TransactionStatisticsRecorder extends Task {
 		}
 		return data;
 	}
-	private List<long[]> addAvgRow(List<long[]>rows, int numOfColumn){
 
-		long[] avgRow = new long[numOfColumn];
-		// skip idx=0 since idx=0 represents transaction numbers
-		avgRow[0] = 100; // -1 stands for avg
-		for (int idx=1; idx<numOfColumn; idx++){
-			long avg = 0;
-			for (long [] row : rows){
-				avg += (row[idx] / rows.size());
-			}
-			// avg = avg / rows.size();
-			avgRow[idx] = avg;
-		}
-
-		// rows.add(avgRow);
-		// return rows;
-		List<long[]> avgRows = new ArrayList<long[]>();
-		avgRows.add(avgRow);
-		return avgRows;
-	}
 	private void generateOutputFile(List<String> header, List<long[]> rows) {
 		// add average row
 		// MODIFIED: 

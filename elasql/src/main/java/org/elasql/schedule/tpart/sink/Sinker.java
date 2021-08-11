@@ -40,6 +40,35 @@ public class Sinker {
 
 		return plans.iterator();
 	}
+	// MODIFIED:
+	/**
+	 * Generate the dependency graph for current node
+	 * @param node
+	 */
+	private void generateDependencyGraph(TxNode node){
+		for(PrimaryKey key : node.getTask().getReadSet()){
+			node.getTask().getProcedure().setDependenTxns(ConservativeOrderedCcMgr.checkPreviousWaitingTxns(key, true));
+		}
+
+		for(PrimaryKey key : node.getTask().getWriteSet()){
+			node.getTask().getProcedure().setDependenTxns(ConservativeOrderedCcMgr.checkPreviousWaitingTxns(key, false));
+		}
+	}
+
+	// MODIFIED:
+	/**
+	 * Add lock requests to queue for building dependency graph.
+	 * @param node
+	 */
+	private void addRWLockQueue(TxNode node){
+		for(PrimaryKey key : node.getTask().getReadSet()){
+			ConservativeOrderedCcMgr.getLockTbl().addSLockRequest(key, node.getTxNum());
+		}
+
+		for(PrimaryKey key : node.getTask().getWriteSet()){
+			ConservativeOrderedCcMgr.getLockTbl().addXLockRequest(key, node.getTxNum());
+		}
+	}
 	
 	protected List<TPartStoredProcedureTask> createSunkPlan(TGraph graph) {
 		List<TPartStoredProcedureTask> localTasks = new LinkedList<TPartStoredProcedureTask>();
@@ -64,22 +93,9 @@ public class Sinker {
 			// Generate write back (to sinks) plans
 			generateWritingBackPlans(plan, node);
 			
-			// MODIFIED:
-			for(PrimaryKey key : node.getTask().getReadSet()){
-				node.getTask().getProcedure().setDependenTxns(ConservativeOrderedCcMgr.checkPreviousWaitingTxns(key, true));
-			}
-
-			for(PrimaryKey key : node.getTask().getWriteSet()){
-				node.getTask().getProcedure().setDependenTxns(ConservativeOrderedCcMgr.checkPreviousWaitingTxns(key, false));
-			}
-
-			for(PrimaryKey key : node.getTask().getReadSet()){
-				ConservativeOrderedCcMgr.getLockTbl().addSLockRequest(key, node.getTxNum());
-			}
-
-			for(PrimaryKey key : node.getTask().getWriteSet()){
-				ConservativeOrderedCcMgr.getLockTbl().addXLockRequest(key, node.getTxNum());
-			}
+			// MODIFIED: Generate dependency graph and add lock requests to queue for building dependency graph.
+			generateDependencyGraph(node);
+			addRWLockQueue(node);
 			
 			// Decide if the local node should execute this plan
 			if (plan.shouldExecuteHere()) {

@@ -15,13 +15,10 @@
  *******************************************************************************/
 package org.elasql.storage.tx.concurrency;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
-import org.elasql.procedure.tpart.TransactionGraph;
 import org.elasql.sql.PrimaryKey;
 import org.elasql.storage.tx.concurrency.ConservativeOrderedLockTable.LockType;
 import org.vanilladb.core.storage.file.BlockId;

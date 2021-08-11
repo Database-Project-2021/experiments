@@ -15,8 +15,6 @@
  ******************************************************************************/
 package org.elasql.storage.tx.concurrency;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -26,7 +24,6 @@ import java.util.Queue;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.elasql.sql.PrimaryKey;
 import org.vanilladb.core.storage.tx.concurrency.LockAbortException;
 
 public class ConservativeOrderedLockTable {
