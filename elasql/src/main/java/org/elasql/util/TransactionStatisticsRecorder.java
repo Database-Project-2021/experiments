@@ -25,59 +25,63 @@ import org.vanilladb.core.util.Timer;
 
 public class TransactionStatisticsRecorder extends Task {
 	private static Logger logger = Logger.getLogger(TransactionStatisticsRecorder.class.getName());
-	
-	// private static final String FILENAME_PREFIX = "auto-bencher-workspace/results/transaction-statistics"+Elasql.serverId();
+
+	// private static final String FILENAME_PREFIX =
+	// "auto-bencher-workspace/results/transaction-statistics"+Elasql.serverId();
 	private static final String FILENAME_PREFIX = "transaction-statistics";
 	private static final String TRANSACTION_ID_COLUMN = "Transaction ID";
 	private static final String FIRST_STATS_COLUMN = "Execution Time";
-	
+
 	// Set 'ture' to use the same filename for the report.
 	// This is used to avoid create too many files in a series of experiments.
 	private static final boolean USE_SAME_FILENAME = true;
 	private static final long TIME_TO_FLUSH = 10; // in seconds
+	private static final boolean ENABLED_STATISTIC_RECORDER = ElasqlProperties.getLoader()
+			.getPropertyAsBoolean(TransactionStatisticsRecorder.class.getName() + ".ENABLED_STATISTIC_RECORDER", true);
 
 	private static class StatisticRecord {
 		String name;
 		long time;
-		
+
 		public StatisticRecord(String name, long time) {
 			this.name = name;
 			this.time = time;
 		}
 	}
-	
+
 	private static class TransactionStatistics {
 		long txNum;
 		List<StatisticRecord> records = new ArrayList<StatisticRecord>();
-		
+
 		public TransactionStatistics(long txNum) {
 			this.txNum = txNum;
 		}
-		
+
 		public void addRecord(String name, long time) {
 			records.add(new StatisticRecord(name, time));
 		}
 	}
-	
-	private static AtomicBoolean isRecording = new AtomicBoolean(false);
-	private static BlockingQueue<TransactionStatistics> queue
-		= new ArrayBlockingQueue<TransactionStatistics>(100000);
 
-	
+	private static AtomicBoolean isRecording = new AtomicBoolean(false);
+	private static BlockingQueue<TransactionStatistics> queue = new ArrayBlockingQueue<TransactionStatistics>(100000);
+
 	public static void startRecording() {
-		if (!isRecording.getAndSet(true)) {
-			// Note: this should be called only once
-			VanillaDb.taskMgr().runTask(new TransactionStatisticsRecorder());
+		// MODIFIED:
+		if (ENABLED_STATISTIC_RECORDER) {
+			if (!isRecording.getAndSet(true)) {
+				// Note: this should be called only once
+				VanillaDb.taskMgr().runTask(new TransactionStatisticsRecorder());
+			}
 		}
 	}
-	
+
 	public static void recordResult(long txNum, Timer timer) {
 		if (!isRecording.get())
 			return;
-			
+
 		// MODIFIED: Print the timer
 		TransactionStatistics stats = new TransactionStatistics(txNum);
-		System.out.print(timer.toString());
+		// System.out.print(timer.toString());
 		for (Object component : timer.getComponents())
 			stats.addRecord(component.toString(), timer.getComponentTime(component));
 		queue.add(stats);
@@ -86,7 +90,7 @@ public class TransactionStatisticsRecorder extends Task {
 	@Override
 	public void run() {
 		Thread.currentThread().setName("Transaction Statistics Recorder");
-		
+
 		try {
 			// Initialize the header
 			List<String> header = createInitialHeader();
@@ -94,16 +98,16 @@ public class TransactionStatisticsRecorder extends Task {
 
 			// Wait for receiving the first statistics
 			TransactionStatistics stats = queue.take();
-			
+
 			if (logger.isLoggable(Level.INFO))
 				logger.info("Transaction statistics recorder starts recording statistics");
-			
+
 			// Save the statistics
 			List<long[]> rows = new ArrayList<long[]>();
 			updateHeader(header, columnToIndex, stats);
 			long[] data = convertStatisticsToArray(header, columnToIndex, stats);
 			rows.add(data);
-			
+
 			// Wait until no more statistics coming in the last 10 seconds
 			while ((stats = queue.poll(TIME_TO_FLUSH, TimeUnit.SECONDS)) != null) {
 				updateHeader(header, columnToIndex, stats);
@@ -112,40 +116,39 @@ public class TransactionStatisticsRecorder extends Task {
 			}
 
 			// avgData = new long[6];
-			
+
 			if (logger.isLoggable(Level.INFO)) {
 				String log = String.format("No more statistics coming in last %d seconds. Start generating a report.",
 						TIME_TO_FLUSH);
 				logger.info(log);
 			}
-			
+
 			// Generate the output file
 			generateOutputFile(header, rows);
 
-			// MODIFIED: 
+			// MODIFIED:
 			// Generate output file of the transaction graph
 			Elasql.getTransactionGraph().generateOutputFile();
-			
-			
+
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
 	}
-	
+
 	private List<String> createInitialHeader() {
 		List<String> header = new ArrayList<String>();
 		header.add(TRANSACTION_ID_COLUMN);
 		header.add(FIRST_STATS_COLUMN);
 		return header;
 	}
-	
+
 	private Map<String, Integer> createHeaderToIndexMapping(List<String> header) {
 		Map<String, Integer> columnToIndex = new HashMap<String, Integer>();
 		for (int idx = 0; idx < header.size(); idx++)
 			columnToIndex.put(header.get(idx), idx);
 		return columnToIndex;
 	}
-	
+
 	private void updateHeader(List<String> header, Map<String, Integer> columnToIndex, TransactionStatistics stats) {
 		for (StatisticRecord record : stats.records) {
 			// Depending on the size of the header, this may be slow.
@@ -155,8 +158,9 @@ public class TransactionStatisticsRecorder extends Task {
 			}
 		}
 	}
-	
-	private long[] convertStatisticsToArray(List<String> header, Map<String, Integer> columnToIndex, TransactionStatistics stats) {
+
+	private long[] convertStatisticsToArray(List<String> header, Map<String, Integer> columnToIndex,
+			TransactionStatistics stats) {
 		long[] data = new long[header.size()];
 		data[0] = stats.txNum;
 		for (StatisticRecord record : stats.records) {
@@ -168,7 +172,7 @@ public class TransactionStatisticsRecorder extends Task {
 
 	private void generateOutputFile(List<String> header, List<long[]> rows) {
 		// add average row
-		// MODIFIED: 
+		// MODIFIED:
 		// rows = addAvgRow(rows, header.size());
 
 		int columnCount = header.size();
@@ -181,17 +185,16 @@ public class TransactionStatisticsRecorder extends Task {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
+
 		if (logger.isLoggable(Level.INFO)) {
-			String log = String.format("A transaction statistics report is generated at \"%s\"",
-					fileName);
+			String log = String.format("A transaction statistics report is generated at \"%s\"", fileName);
 			logger.info(log);
 		}
 	}
-	
+
 	private String generateOutputFileName() {
 		String filename;
-		
+
 		if (USE_SAME_FILENAME) {
 			filename = String.format("%s.csv", FILENAME_PREFIX);
 		} else {
@@ -200,14 +203,14 @@ public class TransactionStatisticsRecorder extends Task {
 			String datetimeStr = datetime.format(formatter);
 			filename = String.format("%s-%s.csv", FILENAME_PREFIX, datetimeStr);
 		}
-		
+
 		return filename;
 	}
-	
+
 	private BufferedWriter createOutputFile(String fileName) throws IOException {
 		return new BufferedWriter(new FileWriter(fileName));
 	}
-	
+
 	private void sortByFirstColumn(List<long[]> rows) {
 		Collections.sort(rows, new Comparator<long[]>() {
 
@@ -217,23 +220,23 @@ public class TransactionStatisticsRecorder extends Task {
 			}
 		});
 	}
-	
+
 	public void writeHeader(BufferedWriter writer, List<String> header) throws IOException {
 		StringBuilder sb = new StringBuilder();
-		
+
 		for (String column : header) {
 			sb.append(column);
 			sb.append(',');
 		}
 		sb.deleteCharAt(sb.length() - 1);
 		sb.append('\n');
-		
+
 		writer.append(sb.toString());
 	}
-	
+
 	public void writeRecord(BufferedWriter writer, long[] row, int columnCount) throws IOException {
 		StringBuilder sb = new StringBuilder();
-		
+
 		for (int i = 0; i < columnCount; i++) {
 			if (i < row.length) {
 				sb.append(row[i]);
@@ -244,7 +247,7 @@ public class TransactionStatisticsRecorder extends Task {
 		}
 		sb.deleteCharAt(sb.length() - 1);
 		sb.append('\n');
-		
+
 		writer.append(sb.toString());
 	}
 }

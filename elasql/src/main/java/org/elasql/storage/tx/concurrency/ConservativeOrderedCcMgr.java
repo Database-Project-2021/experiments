@@ -56,9 +56,6 @@ public class ConservativeOrderedCcMgr extends ConcurrencyMgr {
 			
 			bookedObjs.add(key);
 			readObjs.add(key);
-
-			// MODIFIED: Add CustomLockRequest
-			// lockTbl.addSLockRequest(key, txNum);
 		}
 	}
 
@@ -74,10 +71,7 @@ public class ConservativeOrderedCcMgr extends ConcurrencyMgr {
 				// The key needs to be booked only once. 
 				if (!bookedObjs.contains(key))
 					lockTbl.requestLock(key, txNum);
-				// MODIFIED: Add CustomLockRequest
-				// lockTbl.addSLockRequest(key, txNum);
 			}
-			
 			bookedObjs.addAll(keys);
 			readObjs.addAll(keys);
 		}
@@ -91,25 +85,7 @@ public class ConservativeOrderedCcMgr extends ConcurrencyMgr {
 			
 			bookedObjs.add(key);
 			writeObjs.add(key);
-			// MODIFIED: Add CustomLockRequest
-			lockTbl.addXLockRequest(key, txNum);
 		}
-	}
-
-	// MODIFIED:
-	public static Set<Long> checkPreviousWaitingTxns(PrimaryKey key, Boolean isReadOnly) {
-		if (key != null)
-			return lockTbl.checkPreviousWaitingTxns(key, isReadOnly);
-		return new HashSet<Long>();
-	}
-
-	// MODIFIED:
-	public static Set<Long> checkPreviousWaitingTxnSet(Collection<PrimaryKey> keys, Boolean isReadOnly) {
-		Set<Long> dependentTxns = new HashSet<Long>();
-		if (keys != null)
-			for(PrimaryKey key : keys)
-				dependentTxns.addAll(lockTbl.checkPreviousWaitingTxns(key, isReadOnly));
-		return dependentTxns;
 	}
 
 	/**
@@ -124,14 +100,27 @@ public class ConservativeOrderedCcMgr extends ConcurrencyMgr {
 				// The key needs to be booked only once. 
 				if (!bookedObjs.contains(key))
 					lockTbl.requestLock(key, txNum);
-				// MODIFIED: Add CustomLockRequest	
-				lockTbl.addXLockRequest(key, txNum);
 			}
-			
 			bookedObjs.addAll(keys);
 			writeObjs.addAll(keys);
 		}
 	}
+
+	// MODIFIED:
+	// public static Set<Long> checkPreviousWaitingTxns(PrimaryKey key, Boolean isReadOnly) {
+	// 	if (key != null)
+	// 		return lockTbl.checkPreviousWaitingTxns(key, isReadOnly);
+	// 	return new HashSet<Long>();
+	// }
+
+	// MODIFIED:
+	// public static Set<Long> checkPreviousWaitingTxnSet(Collection<PrimaryKey> keys, Boolean isReadOnly) {
+	// 	Set<Long> dependentTxns = new HashSet<Long>();
+	// 	if (keys != null)
+	// 		for(PrimaryKey key : keys)
+	// 			dependentTxns.addAll(lockTbl.checkPreviousWaitingTxns(key, isReadOnly));
+	// 	return dependentTxns;
+	// }
 	
 	/**
 	 * Request (get the locks immediately) the locks which the transaction

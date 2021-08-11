@@ -7,19 +7,56 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
-// import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
-// import java.util.Map;
-// import java.util.Set;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-// import org.elasql.sql.PrimaryKey;
-// import org.elasql.storage.tx.concurrency.ConservativeOrderedCcMgr;
-// import org.vanilladb.core.storage.tx.concurrency.ConcurrencyMgr;
+import org.elasql.sql.PrimaryKey;
+import org.elasql.util.ElasqlProperties;
 
 public class TransactionGraph {
+    private TransactionGraphQueue graphQueue = new TransactionGraphQueue();
+
+	/**
+	 * 
+	 * @param key
+	 * @param isReadOnly
+	 * @return 
+	 */
+	public Set<Long> checkPreviousWaitingTxns(PrimaryKey key, Boolean isReadOnly) {
+		if (key != null)
+			return graphQueue.checkPreviousWaitingTxns(key, isReadOnly);
+		return new HashSet<Long>();
+	}
+
+    /**
+     * 
+     * @param keys
+     * @param isReadOnly
+     * @return
+     */
+	public Set<Long> checkPreviousWaitingTxnSet(Collection<PrimaryKey> keys, Boolean isReadOnly) {
+		Set<Long> dependentTxns = new HashSet<Long>();
+		if (keys != null){
+            for(PrimaryKey key : keys){
+                if(key != null)
+				    dependentTxns.addAll(graphQueue.checkPreviousWaitingTxns(key, isReadOnly));
+            }
+        }
+		return dependentTxns;
+	}
+
+    public void addSLockRequests(Collection<PrimaryKey> keys, long txNum){
+        graphQueue.addSLockRequests(keys, txNum);
+    }
+
+    public void addXLockRequests(Collection<PrimaryKey> keys, long txNum){
+        graphQueue.addXLockRequests(keys, txNum);
+    }
+
     class Node {
         long txNum;
         List<Long> dependentTxns;
@@ -59,6 +96,7 @@ public class TransactionGraph {
     private long startTime;
     private boolean isSetStartTime;
     private Lock startTimeLock = new ReentrantLock();
+    private static final boolean ENABLED_DEPENDENCY_GRAPH = ElasqlProperties.getLoader().getPropertyAsBoolean(TransactionGraph.class.getName() + ".ENABLED_DEPENDENCY_GRAPH", true);
 
     public TransactionGraph() {
         this.seqTxns = Collections.synchronizedList(new ArrayList<Node>());
@@ -116,7 +154,8 @@ public class TransactionGraph {
 
     public void generateOutputFile() {
         // tx dependency file
-        generateDependencyFile();
+        if(ENABLED_DEPENDENCY_GRAPH)
+            generateDependencyFile();
     }
 
     private void generateDependencyFile() {

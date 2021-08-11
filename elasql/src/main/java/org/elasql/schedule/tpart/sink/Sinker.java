@@ -3,9 +3,11 @@ package org.elasql.schedule.tpart.sink;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 import org.elasql.cache.tpart.TPartCacheMgr;
 import org.elasql.procedure.tpart.TPartStoredProcedureTask;
+import org.elasql.procedure.tpart.TransactionGraph;
 import org.elasql.schedule.tpart.graph.Edge;
 import org.elasql.schedule.tpart.graph.TGraph;
 import org.elasql.schedule.tpart.graph.TxNode;
@@ -19,6 +21,8 @@ public class Sinker {
 	protected PartitionMetaMgr parMeta;
 	protected int myId = Elasql.serverId();
 	protected static int sinkProcessId = 0;
+
+	private TransactionGraph txnGraph = Elasql.getTransactionGraph(); 
 
 	public Sinker() {
 		parMeta = Elasql.partitionMetaMgr();
@@ -46,13 +50,16 @@ public class Sinker {
 	 * @param node
 	 */
 	private void generateDependencyGraph(TxNode node){
-		for(PrimaryKey key : node.getTask().getReadSet()){
-			node.getTask().getProcedure().setDependenTxns(ConservativeOrderedCcMgr.checkPreviousWaitingTxns(key, true));
-		}
+		// for(PrimaryKey key : node.getTask().getReadSet()){
+		// 	node.getTask().getProcedure().addDependenTxns(ConservativeOrderedCcMgr.checkPreviousWaitingTxns(key, true));
+		// }
+		
+		// for(PrimaryKey key : node.getTask().getWriteSet()){
+		// 	node.getTask().getProcedure().addDependenTxns(ConservativeOrderedCcMgr.checkPreviousWaitingTxns(key, false));
+		// }
 
-		for(PrimaryKey key : node.getTask().getWriteSet()){
-			node.getTask().getProcedure().setDependenTxns(ConservativeOrderedCcMgr.checkPreviousWaitingTxns(key, false));
-		}
+		node.getTask().getProcedure().addDependenTxns(txnGraph.checkPreviousWaitingTxnSet(node.getTask().getReadSet(), true));
+		node.getTask().getProcedure().addDependenTxns(txnGraph.checkPreviousWaitingTxnSet(node.getTask().getWriteSet(), false));
 	}
 
 	// MODIFIED:
@@ -61,13 +68,16 @@ public class Sinker {
 	 * @param node
 	 */
 	private void addRWLockQueue(TxNode node){
-		for(PrimaryKey key : node.getTask().getReadSet()){
-			ConservativeOrderedCcMgr.getLockTbl().addSLockRequest(key, node.getTxNum());
-		}
+		// for(PrimaryKey key : node.getTask().getReadSet()){
+		// 	ConservativeOrderedCcMgr.getLockTbl().addSLockRequest(key, node.getTxNum());
+		// }
 
-		for(PrimaryKey key : node.getTask().getWriteSet()){
-			ConservativeOrderedCcMgr.getLockTbl().addXLockRequest(key, node.getTxNum());
-		}
+		// for(PrimaryKey key : node.getTask().getWriteSet()){
+		// 	ConservativeOrderedCcMgr.getLockTbl().addXLockRequest(key, node.getTxNum());
+		// }
+
+		txnGraph.addSLockRequests(node.getTask().getReadSet(), node.getTxNum());
+		txnGraph.addXLockRequests(node.getTask().getWriteSet(), node.getTxNum());
 	}
 	
 	protected List<TPartStoredProcedureTask> createSunkPlan(TGraph graph) {

@@ -48,7 +48,7 @@ public abstract class TPartStoredProcedure<H extends StoredProcedureParamHelper>
 	private List<CachedEntryKey> cachedEntrySet = new ArrayList<CachedEntryKey>();
 	private boolean isCommitted = false;
 	// MODIFIED:
-	private Set<Long> dependentTxns;
+	private Set<Long> dependentTxns = new HashSet<Long>();
 
 	public TPartStoredProcedure(long txNum, H paramHelper) {
 		super(paramHelper);
@@ -114,6 +114,11 @@ public abstract class TPartStoredProcedure<H extends StoredProcedureParamHelper>
 	// MODIFIED:
 	public void setDependenTxns(Set<Long> dependentTxns){
 		this.dependentTxns = dependentTxns;
+	}
+
+	// MODIFIED:
+	public void addDependenTxns(Set<Long> dependentTxns){
+		this.dependentTxns.addAll(dependentTxns);
 	}
 
 	public Set<Long> getDependenTxns(){

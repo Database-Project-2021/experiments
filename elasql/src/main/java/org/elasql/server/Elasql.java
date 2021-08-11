@@ -149,6 +149,9 @@ public class Elasql extends VanillaDb {
 
 		if (logger.isLoggable(Level.INFO))
 			logger.info("using " + SERVICE_TYPE + " type service");
+			
+		// MODIFIED: initialize tx graph
+		txnGraph = new TransactionGraph();
 
 		if (isStandAloneSequencer()) {
 			logger.info("initializing as the stand alone sequencer");
@@ -173,8 +176,6 @@ public class Elasql extends VanillaDb {
 		if (migraComsFactory != null)
 			migraMgr = migraComsFactory.newMigrationMgr();
 
-		// MODIFIED: initialize tx graph
-		txnGraph = new TransactionGraph();
 		// MODIFIED:
 		if (connMgr != null) {
 			if (!connMgr.startSync) {
